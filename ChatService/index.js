@@ -13,7 +13,12 @@ app.get('/', function(request, response) {
     response.send("Olride!");
 });
 
-// Memberikan daftar driver sedang mencari pesanan
+// Menyimpan token_fcm dan username yang diberikan oleh client
+app.post('/token/register', function(request, response) {
+
+});
+
+// Memberikan daftar driver yang sedang mencari pesanan
 app.get('/driver/online', function(request, response) {
     response.json(
         [
@@ -22,7 +27,7 @@ app.get('/driver/online', function(request, response) {
                 token_fcm: 'asdasdasdasdasdasd'
             },
             {
-                token: 'asdasdasdasdasdasdasd',
+                token: 'asdasasdasdasdasdasd',
                 token_fcm: 'asdasdasdasdasdasd'
             },
             {
@@ -33,7 +38,8 @@ app.get('/driver/online', function(request, response) {
     );
 });
 
-// Menerima request untuk mengirimkan pesan ke :target
+// Menerima request untuk mengirimkan pesan ke :target, awalnya perlu dilakukan
+// pencarian token_fcm milik akun :target, kemudian biat request ke fcm
 app.post('/message/send/:target', function(request, response) {
     var target = request.params.target;
     response.send("sending tp " + target);
