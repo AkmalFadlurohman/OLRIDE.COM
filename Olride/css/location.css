@@ -1,0 +1,112 @@
+.editloc_container {
+    margin-top: 10px;
+    height: 50%;
+}
+.subheader {
+    height: 15%;
+}
+.title {
+    float: left;
+}
+.title h1 {
+    text-align: left;
+    margin: 0;
+}
+.display_loc_frame {
+    width: 100%;
+    min-height: 30%;
+}
+table {
+    border-collapse: collapse;
+    font-size: 1.2em;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table, td, th {
+    border: 1px solid black;
+}
+th {
+    text-align:center;
+}
+tr th:nth-child(1) {
+    width:10%;
+    text-align:right;
+}
+tr th:nth-child(2) {
+    width:65%;
+}
+tr th:nth-child(3) {
+    width:25%;
+}
+tr td:nth-child(1),td:nth-child(2) {
+    padding-left: 2%;
+}
+tr th:nth-child(3) {
+
+}
+.edit_operation {
+    display: block;
+}
+.edit_button {
+    border: none;
+    color: #82d800;
+    float: left;
+	margin-top: 5%;
+    margin-left: 15%;
+    cursor: pointer;
+}
+.delete_container {
+	float: right;
+    margin-right: 10%;
+    cursor: pointer;
+}
+.delete_button {
+	background-color: transparent;
+    color: #ff0000;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+}
+.save_button {
+    border: none;
+    color: #82d800;
+    text-decoration: underline;
+    background-color: transparent;
+    float: left;
+    width: 35px;
+    cursor: pointer;
+}
+.cancel_button {
+    color: #ff0000;
+    float: right;
+    margin-top: 5%;
+    margin-right: 15%;
+    font-size: 0.6em;
+    width: 25px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.add_loc_frame {
+    margin-top: 10%;
+    height: 30%;
+}
+.add_loc_frame h2 {
+    text-align: left;
+    margin: 0;
+}
+.add_loc_frame input[type="text"] {
+    width: 80%;
+    margin-right: 5%;
+}
+.back {
+    width: 39px;
+    text-align: center;
+    padding: 3px;
+    font-size: 0.8em;
+    float: left;
+}
+.add {
+    width: 50px;
+    cursor: pointer;
+}

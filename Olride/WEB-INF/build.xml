@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BuildingSansIDE" default="run" basedir=".">
+	<description>WS and Servlet Build</description>
+	<target name="compile"
+		description="Compile the Java code.">
+		<javac srcdir="sources"
+		destdir="classes"
+		debug="true"
+		includeantruntime="false" />
+	</target>
+	<target name="run" depends="compile"
+		description="Run the Java application.">
+	</target>
+</project>

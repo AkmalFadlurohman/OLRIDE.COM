@@ -1,0 +1,87 @@
+body {
+	background-color: rgb(210,210,210);
+	color: rgb(250,250,250);
+}
+
+.frame {
+	border: 7px solid rgb(65,62,119);
+	border-radius: 25px;
+	background-color: rgb(92,88,138);
+	margin: 50px auto;
+}
+
+#login_frame {
+	height: 550px;
+	width: 400px;
+}
+
+.frame > h1 {
+	text-align: center;
+}
+
+#login_frame > div {
+	left: 10%;
+	width: 80%;
+	height: auto;
+	position: relative;
+}
+
+input{
+	width: 100%;
+	margin: 1px auto 15px;
+}
+
+#login_frame input[type="submit"] {
+    border-radius: 40px;
+    background-color: rgb(191,216,255);
+    padding: 5px 3px;
+	display: block;
+	width: 30%;
+    border : none;
+    cursor : pointer;
+	margin: 0 auto 15px;
+}
+
+#login_frame input[type="submit"]:hover {
+    opacity: 0.6;
+}
+
+#sign_up_frame {
+	width: 400px;
+	height: 550px;
+}
+
+input[type="checkbox"]{
+	width: 0;
+	margin-right: 10px;
+}
+
+#sign_up_frame input[type="submit"] {
+    border-radius: 40px;
+    background-color: rgb(191,216,255);
+    padding: 5px 3px;
+    display: block;
+    width: 30%;
+    border : none;
+    cursor : pointer;
+    margin: 0 auto 15px;
+}
+
+#sign_up_frame input[type="submit"]:hover {
+    opacity : 0.6;
+}
+
+#sign_up_frame > div {
+	left: 10%;
+	width: 80%;
+	height: auto;
+	position: relative;
+}
+
+a:link, a:visited {
+	color: rgb(250,250,250);	
+}
+
+a:hover {
+	color: rgb(167,180,4);
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints
+	xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+	version="2.0">
+	<endpoint name="LocationManager"
+			implementation="com.olride.OjolServices.LocationManager"
+			url-pattern="/OjolServices/LocationManager" />
+	<endpoint name="OrderManager"
+			implementation="com.olride.OjolServices.OrderManager"
+			url-pattern="/OjolServices/OrderManager" />
+</endpoints>

@@ -1,0 +1,120 @@
+.history_container {
+    height: 79%;
+}
+
+.history_container .subheader {
+	height: 10%;
+}
+
+.history_container > * {
+	
+}
+
+.history_menu {
+	border: 0.5px solid black; 
+    text-align: center;
+    font-family: calibri;
+
+	position: relative;;
+	display: block;
+
+	text-decoration: none;
+}
+
+.history_menu > h3 {
+	margin: 5px 1px;
+}
+
+#history_table_container {
+	overflow-y: auto;
+	height: inherit;
+}
+
+table.history_table {
+	margin-top: 5px;
+	width: 100%;
+    padding: 0;
+    border-collapse: collapse;
+}
+
+table.history_table p {
+	margin: 0 0 5px 0;
+	padding: 0;
+	font-size: 12px;
+	font-style: "Lucida Console", Monaco, monospace;
+}
+
+td.history_column {
+	padding: 2px 0 0 8px;
+}
+
+table.history_table p.history_date {
+	color: grey;
+	font-weight: bold;
+}
+
+table.history_table p.history_username {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+table.history_table th, td {
+    padding: 0 5px;
+    border-collapse: collapse;
+}
+
+table.history_table tr td.order_data {
+	vertical-align: top;
+}
+
+img.history_pict {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: inline;
+    margin: 0;
+}
+
+.hide_hist_button {
+    width: 20%;
+    border-radius: 15%;
+    border-color: black;
+	margin-top: -7px;
+	margin: 0;
+	color: black;
+	background-color: red;
+	font-size: 15px;
+}
+.checked {
+	color:orange
+}
+
+.yellow_score {
+	font-size: 20px;
+	color: orange;
+	vertical-align: middle;
+}
+
+ul#history_nav.nav_bar > li {
+	width: 50%;
+}
+	
+ul#history_nav {
+	margin-bottom: 7px;
+}
+
+div.left_data {
+	width: 75%;
+	float: left;
+	margin-bottom: 30px;
+}
+
+div.right_data {
+	width: 25%;
+	float: right;
+	position: relative;
+}
+
+td.img_col {
+	vertical-align: top;
+}

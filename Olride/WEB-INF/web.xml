@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems,
+Inc.//DTD Web Application 2.3//EN"
+"http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
+
+<web-app>
+	<listener>
+		<listener-class>
+			com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+		</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>IdentityService</servlet-name>
+		<servlet-class>com.olride.IDServices.IdentityService</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>Login</servlet-name>
+		<servlet-class>com.olride.IDServices.Login</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>Register</servlet-name>
+		<servlet-class>com.olride.IDServices.Register</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>Logout</servlet-name>
+		<servlet-class>com.olride.IDServices.Logout</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>ImageRetriever</servlet-name>
+		<servlet-class>com.olride.IDServices.ImageRetriever</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>OjolServices/LocationManager</servlet-name>
+		<servlet-class>
+			com.sun.xml.ws.transport.http.servlet.WSServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>OjolServices/OrderManager</servlet-name>
+		<servlet-class>
+			com.sun.xml.ws.transport.http.servlet.WSServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>IdentityService</servlet-name>
+		<url-pattern>/IDServices/IdentityService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Login</servlet-name>
+		<url-pattern>/IDServices/Login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Logout</servlet-name>
+		<url-pattern>/IDServices/Logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Register</servlet-name>
+		<url-pattern>/IDServices/Register</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ImageRetriever</servlet-name>
+		<url-pattern>/IDServices/ImageRetriever</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OjolServices/LocationManager</servlet-name>
+		<url-pattern>/OjolServices/LocationManager</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OjolServices/OrderManager</servlet-name>
+		<url-pattern>/OjolServices/OrderManager</url-pattern>
+	</servlet-mapping>
+	
+</web-app>

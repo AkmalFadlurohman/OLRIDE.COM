@@ -1,0 +1,131 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.frame {
+    width: 360px;
+    height: 550px;
+	margin: 50px auto;
+    padding: 5px 20px;
+    padding-right: 20px;
+    padding-left: 20px;
+    border-top: 0.5px solid black;
+    border-bottom: 0.5px solid black;
+    border-left: 0.5px solid black;
+    border-right: 0.5px solid black;
+    font-family: calibri light;
+}
+
+.frame h1,h2 {
+	text-align: center;
+    font-family: franklin gothic;
+}
+
+.button {
+    color: black;
+    border: 2px solid black;
+    border-radius: 6px;
+    text-shadow:none;
+}
+
+.green {
+    background: #82d800;
+}
+
+.green:hover {
+    background: #9dff08;
+}
+
+.red {
+    background: #d50027;
+}
+
+.red:hover {
+    background: #ff264e;
+}
+
+input{
+	width: 90%;
+    border: 1px solid black;
+}
+
+a {
+    color: black;
+}
+
+a:link, a:visited {
+	text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+	opacity: 0.6%;
+}
+
+.menu {
+    border: 0.5px solid black; 
+    width: 119px;
+    float: left;
+    text-align: center;
+    font-family: calibri;
+}
+
+.menu_active {
+    background-color: #465d43;
+    color: white;
+}
+
+.menu > h3 {
+    margin-top: 5%;
+    margin-bottom: 5%
+}
+
+.menu_container {
+    width: 360px;
+    margin: 15px auto 5px auto;
+}
+
+.subheader {
+    height: 15%;
+    margin-bottom: 10px;
+}
+.title {
+    float: left;
+}
+.title h1 {
+    text-align: left;
+    margin: 0;
+}
+
+.profile_pict_frame {
+    width: 90px;
+    height: 90px;
+    overflow: auto;
+    border: 5px solid #333333;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.profile_pict_frame img {
+    display: inline;
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+}
+
+ul.nav_bar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: table;
+    width: inherit;
+}
+
+ul.nav_bar > li {
+    display: table-cell;
+}
+
+#main_nav_bar.nav_bar > li {
+}

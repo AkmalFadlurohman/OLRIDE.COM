@@ -1,0 +1,264 @@
+.order_container {
+	height: 79%;
+}
+
+.order_container .subheader {
+	height: 10%;
+}
+
+.submenu_container {
+	width: 100%;
+	display: table;
+	border-collapse: separate;
+	border-spacing: 10px;
+	margin-bottom: 5px;
+}
+
+.submenu {
+	display: table-cell;
+	width: 30%;
+	height: 40px;
+	border: 0.5px solid black;
+	font-size: 15px;
+	position: relative;
+}
+
+.submenu_active {
+	background-color: #fffe9f; 
+}
+
+.submenu.mid {
+	margin: 0 5% 0;
+}
+
+div.step_num {
+	float: left;
+	width: 20%;
+	height: 100%;
+	vertical-align: middle;
+}
+
+div.step_name {
+	float: right;
+	height: 100%;
+	vertical-align: middle;
+}
+
+div.step_num p {
+	margin: 10px 0 0 2px;
+	text-align: center;
+	width: 25px;
+	padding: 2% 0;
+	background-color: grey;
+	border-radius: 50%;
+}
+
+div.step_name p {
+	margin: 0 0 0 15px;
+}
+
+.submenu p {
+	margin: 0;
+	position: absolute;
+	top: 0%;
+	vertical-align: middle;
+}
+
+div.step_name {
+	float: right;
+	width: 80%;
+	text-align: left;
+}
+
+.content {
+	width: 100%;
+	padding-left: 0px;
+	margin: 5px;
+}
+
+.content div {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.content span.loc_form_label {
+	width: 30%;
+	margin-right: auto;
+	float: left;
+}
+
+.content div.rating_bar {
+	display: inline-block;
+	width: 60%;
+	height: 45px;
+}
+
+.content input[type=text] {
+	width: 63%;
+	height: 20px;
+}
+
+.content #loc_button {
+	text-align: center;
+	vertical-align: middle;
+	position: absolute;
+	margin: 10px;
+	left: 45%;
+	width: 60px;
+	height: 30px;
+
+}
+
+#select_driver h2 {
+	margin: 7px 0;
+}
+
+div h2 {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+}
+
+.star {
+	font-size: 30px;
+	color: yellow;
+
+	text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+div.rating_bar {
+	height: auto;
+	vertical-align: top;
+	border-radius: 20px;
+}
+
+#order_link {
+    background-color: #465d43;
+}
+
+#driver_table_container {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 70%;
+}
+
+img.driver_pict {
+	width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: inline;
+    margin: 0;
+}
+
+table.driver_table {
+	margin-top: 5px;
+	width: 100%;
+    padding: 0;
+    border-collapse: collapse;
+}
+
+table.driver_table th, td {
+    padding: 0 5px;
+    border-collapse: collapse;
+}
+
+table.driver_table p {
+	margin: 0 0 5px 0;
+	padding: 0;
+	width: 40%;
+	font-size: 12px;
+	font-style: "Lucida Console", Monaco, monospace;
+}
+
+td.driver_column {
+	padding-top: 5px;
+	padding-right: 10px;
+	padding-left: 20px;
+}
+
+table.driver_table tr td.driver_column {
+	vertical-align: top;
+}
+
+table.driver_table p.driver_username {
+	font-size: 25px;
+	font-weight: bold;
+}
+
+table.driver_table p > span {
+	color: orange;
+	font-weight: bold;
+}
+
+table.driver_table p.driver_username {`
+	font-size: 25px;
+	font-weight: bold;
+}
+
+div.choose_driver {
+	float: right;
+	border: 0.5px solid black;
+	border-radius: 5px;
+	width: 50%;
+	text-align: center;
+	padding: 5px;
+}
+
+div#driver_profile {
+	margin: 0;
+	padding-top: 10px;
+	text-align: center;
+}
+
+div#driver_profile p {
+	padding: 0;
+	margin: 0;
+}
+
+div#complete_order.content {
+	text-align: center;
+	height: inherit;
+	overflow-y: scroll;
+}
+
+div#left_complete {
+	margin-top: 5px;
+	width: 40%;
+	float: left;
+}
+
+div#right_complete {
+	margin-top: 20px;
+	width: 60%;
+	float: right;
+}
+
+#submit_cmplt_ordr {
+	overflow-x: hidden;
+	height: inherit;
+}
+
+#finish_button {
+	width: 110px;
+	height: 50px;
+}
+
+#comment {
+	width: 90%;
+}
+
+div#finish_button_container {
+	width: 95%;
+	text-align: right;
+}
+
+div#preferred_driver, div#other_driver {
+	border: 1px solid black;
+	border-radius: 25px;
+	padding: 0 5px;
+	width: 95%;
+}

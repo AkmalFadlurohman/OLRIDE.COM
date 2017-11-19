@@ -1,0 +1,31 @@
+.header {
+    height: 55px;
+}
+.logo {
+    float: left;
+    height: 50px;
+}
+.logo h2 {
+    text-align: left;
+    margin: 0;
+    margin-top: 10px;
+}
+.logo p {
+    text-align: left;
+    margin: 0 auto;
+    font-size: 0.8em;
+}
+.greeting {
+    float: right;
+    font-size: 0.8em;
+}
+.greeting p {
+    text-align: right;
+    margin: 0 ;
+    margin-top: 15px;
+}
+
+div.greeting a, div.greeting a:link, div.greeting a:visited {
+    color: blue;
+    text-decoration: underline;
+}

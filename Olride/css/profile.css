@@ -1,0 +1,122 @@
+.profile_container {
+    height: 50%;
+}
+
+.edit_profile_button {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.edit_profile_button a {
+    text-decoration: none;
+    color: #f9880e;
+}
+.profile_info_container {
+    text-align: center;
+    margin-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile_data_container {
+    height: 100px;
+}
+.username_display {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.profile_data_container p {
+    margin: 0px;
+    padding: 0px;
+}
+.prefloc_container {
+    height: 40%;
+    margin-top : 5%;
+}
+.prefloc_list ul {
+    list-style-type: none;
+    margin: 0;
+	padding: 15px;
+}
+.prefloc_list ul:first-child {
+     padding-left: 0px;
+}
+.edit_prefloc_button {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.edit_prefloc_button a {
+    text-decoration: none;
+    color: #f9880e;
+}
+.edit_profile_container {
+    margin-top: 5px;
+    overflow-y: auto;
+    height: 72%;
+}
+.change_profilepict {
+    display: flex;
+    height: 25%;
+    width: 100%;
+    margin-bottom: 5%;
+}
+.current_pict_frame {
+    width: 115px;
+    height: 100px;
+    overflow: auto;
+    border-radius: 50%;
+    margin-left: 5%;
+}
+.current_pict_frame img {
+    display: inline;
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+}
+.pict_name_field {
+    width: 150px;
+    margin-top: 35px;
+    margin-left: 5%;
+}
+.pict_name_field input {
+    width: 100%;
+}
+.pict_picker_frame {
+    width: 100px;
+    margin-top: 37px;
+}
+.pict_picker_frame input {
+    border: 0px;
+}
+.current_profile {
+    height: 25%;
+    width: 100%;
+    display: flex;
+}
+.form_name {
+    height: 100px;
+    width: 115px;
+    margin-left: 5%;
+    margin-right: 5%
+}
+.form_field {
+    height: 100px;
+    width: 250px;
+}
+.form_field input {
+    width: 100%;
+}
+.back {
+    width: 39px;
+    text-align: center;
+    padding: 3px;
+    font-size: 0.8em;
+}
+.save {
+    width: 50px;
+    cursor: pointer;
+}
+#profile_link {
+    background-color: #465d43;
+}
