@@ -10,16 +10,16 @@
 	width: 100%;
 	display: table;
 	border-collapse: separate;
-	border-spacing: 10px;
+	border-spacing: 5px;
 	margin-bottom: 5px;
 }
 
 .submenu {
 	display: table-cell;
-	width: 30%;
-	height: 40px;
+	width: 20%;
+	height: 35px;
 	border: 0.5px solid black;
-	font-size: 15px;
+	font-size: 13px;
 	position: relative;
 }
 
@@ -47,14 +47,14 @@ div.step_name {
 div.step_num p {
 	margin: 10px 0 0 2px;
 	text-align: center;
-	width: 25px;
+	width: 15px;
 	padding: 2% 0;
 	background-color: grey;
 	border-radius: 50%;
 }
 
 div.step_name p {
-	margin: 0 0 0 15px;
+	margin: 0 0 0 5px;
 }
 
 .submenu p {

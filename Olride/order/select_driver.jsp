@@ -110,7 +110,7 @@
 	    		<div class="title"><h1>Make an Order</h1></div>
 	    	</div>
 			<div class="submenu_container">
-				<div class="submenu left">
+				<div class="submenu">
 					<div class="step_num">
 						<p>1</p>
 					</div>
@@ -118,8 +118,8 @@
 						<p>Select Destination</p>
 					</div>
 				</div>
-			
-				<div class="submenu mid submenu_active">
+
+				<div class="submenu submenu_active">
 					<div class="step_num">
 						<p>2</p>
 					</div>
@@ -128,9 +128,18 @@
 					</div>
 				</div>
 
-				<div class="submenu right">
+				<div class="submenu">
 					<div class="step_num">
 						<p>3</p>
+					</div>
+					<div class="step_name">
+						<p>Chat Driver</p>
+					</div>
+				</div>
+
+				<div class="submenu">
+					<div class="step_num">
+						<p>4</p>
 					</div>
 					<div class="step_name">
 						<p>Complete Order</p>
@@ -163,9 +172,9 @@
 		        						while ((inputLine = buffer.readLine()) != null) {
 		        							res.append(inputLine);
 		        						}
-		        						String prefUJson = res.toString();
-		        						prefUDriver = new Gson().fromJson(prefUJson,User.class);
-		        						if (prefUDriver != null) {
+		        						if (!"Not Available".equals(res.toString())) {
+		        							String prefUJson = res.toString();
+		        							prefUDriver = new Gson().fromJson(prefUJson,User.class);
 		        							httpPost = (HttpURLConnection) urlAddress.openConnection();
 			        						httpPost.setRequestMethod("POST");
 			        						httpPost.setDoOutput(true);

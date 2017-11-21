@@ -109,8 +109,12 @@ public class IdentityService extends HttpServlet {
 		} else if ("getPrefDriver".equals(action)) {
 			String name = request.getParameter("prefDriverName");
 			user = getUserByName(name);
-			String prefDriverJson = new Gson().toJson(user);
-			out.println(prefDriverJson);		
+			if (user.getId() == 0) {
+				out.println("Not Available");
+			} else {
+				String prefDriverJson = new Gson().toJson(user);
+				out.println(prefDriverJson);		
+			}	
 		} else if ("upvoteDriver".equals(action)) {
 			int id = Integer.parseInt(request.getParameter("id"));
 			int score = Integer.parseInt(request.getParameter("score"));
@@ -189,11 +193,7 @@ public class IdentityService extends HttpServlet {
 					} else if ("hideOrder".equals(action)) {
 						user = getUserByID(id);
 						int orderId = Integer.parseInt(request.getParameter("orderID"));
-						String page = request.getParameter("page");
-						boolean status = false;
-						if ("driver".equals(page)) {
-							status = true;
-						}
+						String hideAs = request.getParameter("hideAs");
 						URL url = new URL("http://localhost:8080/Olride/OjolServices/OrderManager?wsdl");
 						
 						QName qname = new QName("http://OjolServices.olride.com/", "OrderManagerService");
@@ -201,9 +201,9 @@ public class IdentityService extends HttpServlet {
 						Service service = Service.create(url, qname);
 						
 						OrderManagerInterface OM = service.getPort(OrderManagerInterface.class);
-						OM.hideOrder(orderId,status);
-						if ("transaction".equals(page)) {
-							response.sendRedirect("../history/transaction_history.jsp?id="+id);
+						OM.hideOrder(orderId,"driver".equals(hideAs));
+						if ("customer".equals(hideAs)) {
+							response.sendRedirect("../history/transaction_history.jsp?id="+id);							
 						} else {
 							response.sendRedirect("../history/driver_history.jsp?id="+id);
 						}
@@ -509,7 +509,7 @@ public class IdentityService extends HttpServlet {
 			JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 			.subject(username)
 			.issuer("olride.com")
-			.expirationTime(new Date(new Date().getTime() + 180 * 1000))
+			.expirationTime(new Date(new Date().getTime() + 7200 * 1000))
 			.build();
 			
 			SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS512), claimsSet);

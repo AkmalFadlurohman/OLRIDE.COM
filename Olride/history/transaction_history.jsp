@@ -183,7 +183,7 @@
                                                 		out.println("<form style='display: inline' method='POST' action='../IDServices/IdentityService'>");
                                                 			out.println("<input type='hidden' name='action' value='hideOrder'>");
                                                     		out.println("<input type='hidden' name='id' value="+user.getId()+">");
-															out.println("<input type='hidden' name='page' value='transaction'>");
+															out.println("<input type='hidden' name='hideAs' value='customer'>");
                                                     		out.println("<input type='hidden' name='orderID' value='"+OM.getListOrderCustomer(user.getId())[i].getOrderId()+"'>");
                                                     		out.println("<input type='submit' class='hide_hist_button' value='HIDE'>");
                                                 		out.println("</form>");
