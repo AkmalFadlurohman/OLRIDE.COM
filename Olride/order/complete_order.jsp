@@ -21,6 +21,11 @@
 		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
 		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 	} else {
+		URL ipChecker = new URL("http://checkip.amazonaws.com");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ipChecker.openStream()));
+        String ipAddress = reader.readLine();
+        String userAgent = request.getHeader("User-Agent");
+
 		String token = cookies[j].getValue();
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
@@ -28,7 +33,7 @@
 		httpPost.setRequestMethod("POST");
 		httpPost.setDoOutput(true);
 		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-		writer.writeBytes("action=validateToken&id="+id+"&token="+token);
+		writer.writeBytes("action=validateAccess&id="+id+"&token="+token+"&agent="+userAgent+"&ip="+ipAddress);
 		writer.flush();
 		writer.close();
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
@@ -41,8 +46,8 @@
 		}
 		buffer.close();
 		String msg = res.toString();
-		if ("expired".equals(msg)) {
-			response.sendRedirect("../IDServices/Logout?action=expired&id="+id);
+		if ("forbidden".equals(msg)) {
+			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
 	}
 %>
