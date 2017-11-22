@@ -56,6 +56,7 @@
 	<script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
 	<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
 
 	<%
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
@@ -155,41 +156,11 @@
         <br>
         
         <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController">
-            <div class="col-6 chatarea">
+            <div class="col-6 chatarea" id="chatarea">
                 <ul class="chatlist">
-                    <li class="right">
+					<li ng-repeat="message in messages" ng-class="message.sender == 1 ? 'right' : 'left'">
                         <div>
-                            <p>ini isinya pesan.... ini isinya pesan.... ini isinya pesan.... ini isinya pesan....</p>
-                        </div>
-                    </li>
-                    <li class="left">
-                        <div>
-                            <p>Apa sih, ga jelas banget ini pesan!</p>
-                        </div>
-                    </li>
-                    <li class="left">
-                        <div>
-                            <p>Apa sih, ga jelas banget ini pesan!</p>
-                        </div>
-                    </li>
-                    <li class="left">
-                        <div>
-                            <p>Apa sih, ga jelas banget ini pesan!</p>
-                        </div>
-                    </li>
-                    <li class="left">
-                        <div>
-                            <p>Apa sih, ga jelas banget ini pesan!</p>
-                        </div>
-                    </li>
-                    <li class="right">
-                        <div>
-                            <p>{{messages.reply}}</p>
-                        </div>
-                    </li>
-					<li class="left">
-                        <div>
-                            <p>{{messages.sent}}</p>
+                            <p>{{message.text}}</p>
                         </div>
                     </li>
                 </ul>
@@ -206,7 +177,6 @@
             </div>
         </div>
 
-
 		<br>
         <br>
 
@@ -220,6 +190,7 @@
     </div>
     
 	<script>
+
 		var config = {
 			apiKey: "AIzaSyB0KWompT2YoRR99caQcanuxSr-ag5Z6-k",
 			authDomain: "olride-69182.firebaseapp.com",
@@ -238,14 +209,40 @@
 			.catch(function(err) {
 				  console.log('Unable to get permission to notify.', err);
 			});
-	
+
+		var chatData = {
+			id: 1,
+			participants: [1,3],
+			messages: [
+				{
+					sender : 1,
+					text: "Hallo apa kabar!"
+				},
+				{
+					sender : 3,
+					text: "Iya kabar baik, ini siapa ya?"
+				},
+				{
+					sender : 3,
+					text: "Kamu user 1 bukan? kayaknya aku inget deh"
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+			]
+		};
 	
 		var app =  angular.module('chatApp',["firebase"]);
 		app.controller('chatController', function($scope,$firebaseObject){
-			  var ref = firebase.database().ref().child("messages");
-			  var syncObject = $firebaseObject(ref);
-			 syncObject.$bindTo($scope, "messages");
-		 });
+			// var ref = firebase.database().ref().child("messages");
+			// var syncObject = $firebaseObject(ref);
+			// syncObject.$bindTo($scope, "messages");
+
+			$scope.messages = chatData.messages;
+
+			// $('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
+		});
 	</script>
 
 </body>
