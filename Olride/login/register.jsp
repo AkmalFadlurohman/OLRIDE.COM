@@ -1,3 +1,4 @@
+<%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.HttpURLConnection,java.net.URL"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,6 +8,11 @@
 </head>
 <body>
 	<div class="frame">
+        <%
+                URL ipChecker = new URL("http://checkip.amazonaws.com");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ipChecker.openStream()));
+                String ipAddress = reader.readLine();
+        %>
         <div class="signup_header">
             <div class="horizontal_line"></div>
             <h1>SIGNUP</h1>
@@ -62,17 +68,18 @@
                 </div>
                 <div class="form_button">
                     <a class="have_account" href="../login/login.jsp">Already have an account?</a>
+                    <input type="hidden" name="ipAddress" value=<%out.println(ipAddress);%>>
                     <input type="submit" class="button green signup" value="REGISTER">
                 </div>
             </div>
         </form>
 	</div>
 	<%
-        		String script = null;
-        		script = (String) request.getAttribute("script");
-        		if (script != null) {
-        			out.println(script);
-        		}
+    	String script = null;
+    	script = (String) request.getAttribute("script");
+		if (script != null) {
+			out.println(script);
+        }
     %>
     <script>
         function validateForm() {

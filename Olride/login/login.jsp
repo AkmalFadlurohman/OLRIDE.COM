@@ -1,3 +1,4 @@
+<%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.HttpURLConnection,java.net.URL"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,13 +8,18 @@
     </head>
     <body>
         <div class="frame">
+            <%
+                URL ipChecker = new URL("http://checkip.amazonaws.com");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ipChecker.openStream()));
+                String ipAddress = reader.readLine();
+            %>
             <div class="login_header">
                 <div class="horizontal_line"></div>
                 <h1>LOGIN</h1>
                 <div class="horizontal_line"></div>
             </div>
             <div>
-            		<p class="error" id="errorCredential" style="text-align: center;"></p>
+            		<p class="error" id="error" style="text-align: center;"></p>
             		<p class="error" id="requireLogin" style="text-align: center;"></p>
 			</div>
             <form name="login" method="POST" action="../IDServices/Login">
@@ -36,6 +42,7 @@
                     </div>
                     <div class="form_button">
                         <a class="no_account" href="../login/register.jsp">Don't have an account?</a>
+                        <input type="hidden" name="ipAddress" value=<%out.println(ipAddress);%>>
                         <input type="submit" class="button green login" value="GO!">
                     </div>
                 </div>
@@ -51,8 +58,8 @@
         <script>
             function validate()
             {
-                var username = document.login.user_name.value;
-                var password = document.login.user_password.value;
+                var username = document.login.username.value;
+                var password = document.login.password.value;
                 if (username==null || username=="")
                 {
                     window.alert("Username can't be blank");

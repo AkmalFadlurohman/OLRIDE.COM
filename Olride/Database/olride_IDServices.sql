@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `username`   VARCHAR(50) 	NOT NULL,
     `password`   VARCHAR(20) 	NOT NULL,
     `status`     VARCHAR(10) 	NOT NULL,
-	`token`      VARCHAR(400) 	DEFAULT NULL,
+	`token`      VARCHAR(500) 	DEFAULT NULL,
 	`secret`	 MEDIUMBLOB	 	DEFAULT NULL,
 	`pict`       MEDIUMBLOB  	DEFAULT NULL,
 

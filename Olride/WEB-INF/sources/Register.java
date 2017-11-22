@@ -20,7 +20,10 @@ public class Register extends HttpServlet {
 	
 	public void doPost(HttpServletRequest request,HttpServletResponse response)
 	throws ServletException,IOException {
-		
+
+		String userAgent = request.getHeader("User-Agent");
+		String ipAddress = request.getParameter("ipAddress");
+
 		String fullname = request.getParameter("fullname");
 		String username = request.getParameter("username");
 		String email = request.getParameter("email");
@@ -41,7 +44,7 @@ public class Register extends HttpServlet {
 		httpPost.setRequestMethod("POST");
 		httpPost.setDoOutput(true);
 		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-		writer.writeBytes("action=register&fullname="+fullname+"&username="+username+"&email="+email+"&password="+password+"&confirm_password="+cpassword+"&phone="+phone+"&status="+status);
+		writer.writeBytes("action=register&fullname="+fullname+"&username="+username+"&email="+email+"&password="+password+"&confirm_password="+cpassword+"&phone="+phone+"&status="+status+"&agent="+userAgent+"&ip="+ipAddress);
 		writer.flush();
 		writer.close();
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
