@@ -568,7 +568,7 @@ public class IdentityService extends HttpServlet {
 			JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 			.subject(username)
 			.issuer("olride.com")
-			.expirationTime(new Date(new Date().getTime() + 180 * 1000))
+			.expirationTime(new Date(new Date().getTime() + 3600 * 24 * 1000))
 			.claim("registeredAgent",userAgent)
 			.claim("registeredIP",ipAddress)
 			.build();

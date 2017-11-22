@@ -1,0 +1,469 @@
+/* ------------------------- GENERAL -------------------------*/
+
+body {
+    background-color: #F5F5F5;
+    font-family: KacstOffice, sans-serif;
+}
+
+.container {
+    width: 80%;
+    max-width: 700px;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    min-height: 600px;
+}
+
+.row:before,
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+[class*='col-'] {
+    float: left;
+    min-height: 1px;
+    width: 16.66%;
+}
+
+.col-1 {
+    width: 16.66%;
+}
+
+.col-2 {
+    width: 33.33%;
+}
+
+.col-3 {
+    width: 50%;
+}
+
+.col-4 {
+    width: 66.66%;
+}
+
+.col-5 {
+    width: 83.33%;
+}
+
+.col-6 {
+    width: 100%;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-orange {
+    color: orange;
+}
+
+.btn {
+    border-radius: 5px;
+    border: 1px solid black;
+    padding: 5px 15px;
+    color: black;
+    text-decoration: none;
+    font-size: medium;
+}
+
+.red {
+    background-color: #DA0000;
+}
+
+.green {
+    background-color: #58F100;
+}
+
+.line-height-medium {
+    line-height: 30px;
+}
+
+/* ------------------------- HEADER -------------------------*/
+
+.logo:after {
+    background-image: url('/Olride/img/logo.jpg');
+    background-size: 210px 40px;
+    display: inline-block;
+    width: 210px;
+    height: 40px;
+    content: "";
+    margin-bottom: 5px;
+}
+
+.user-action {
+    margin-top: 0px;
+}
+
+.tab {
+    outline: 1px solid #004D40;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-weight: 900;
+    color: black;
+    text-decoration: none;
+}
+
+.tab.active {
+    background-color: #426344;
+    color: #FAFAFA;
+}
+
+.tab:hover {
+    background-color: #426344;
+    color: #FAFAFA;
+}
+
+/* ------------------------- ICON -------------------------*/
+
+@font-face {
+    font-family: 'icon';
+    src: url("/font/typicons.eot");
+    src: url("/font/typicons.eot?#iefix") format('embedded-opentype'),
+    url("/font/typicons.woff") format('woff'),
+    url("/font/typicons.ttf") format('truetype'),
+    url("/font/typicons.svg#typicons") format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon:before {
+    font-family: 'icon';
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    height: 1em;
+    font-size: 1em;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility
+}
+
+.icon.big {
+    font-size: 3em;
+    color: #c2c2c2;
+}
+
+.icon.icon-mail:before {
+    content: '\e0a5'
+}
+
+.icon.icon-phone:before {
+    content: '\e0c5'
+}
+
+.icon.icon-star:before {
+    content: '\e108'
+}
+
+.icon.icon-star-full:before{
+    content:'\e105'
+}
+
+/* ------------------------- PROFIL -------------------------*/
+
+.img-circle {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    border: 3px solid black;
+}
+
+.img-profile {
+    width: 130px;
+    height: 130px;
+    outline: 3px solid black;
+}
+
+.profil > p {
+    line-height: 50%;
+}
+
+.location-list {
+    line-height: 1.9em;
+    list-style-image: url('/img/ic_triangle.png');
+}
+
+.edit:after {
+    background-image: url('/img/ic_edit.jpg');
+    background-size: 45px 45px;
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    content: "";
+}
+
+a.edit:after {
+    margin: 15px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #c2c2c2;
+}
+
+.action-edit {
+    background-image: url('/img/ic_edit.jpg');
+    background-size: 25px 25px;
+    display: inline-block;
+    width: 25px;
+    height: 20px;
+    content: "";
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.action-save {
+    background-image: url('/img/ic_edit.jpg');
+    background-size: 25px 25px;
+    display: inline-block;
+    width: 25px;
+    height: 20px;
+    content: "";
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.action-delete {
+    background-image: url('/img/ic_close.png');
+    background-size: 17px 17px;
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    content: "";
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #008C14;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #008C14;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(17px);
+    -ms-transform: translateX(17px);
+    transform: translateX(17px);
+}
+
+.slider.round {
+    border-radius: 22px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.input-photo {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.input-photo + label {
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    line-height: 33px;
+}
+
+.input-photo + label > .input-photo-button {
+    color: black;
+    float: right;
+    font-size: 0.75em;
+    width: 27%;
+    background-color: #ccc;
+    text-align: center;
+}
+
+.input-photo + label > .input-photo-result {
+    float: left;
+    font-size: 0.75em;
+    width: 70%;
+    height: 32px;
+    padding-left: 5px;
+    border: solid 1px black;
+    margin-right: 2px;
+}
+
+.input-photo:focus + label > .input-photo-button,
+.input-photo + label > .input-photo-button:hover {
+    background-color: #999aa3;
+}
+
+.input-photo:focus + label > .input-photo-button {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+/* ------------------------- ORDER -------------------------*/
+
+.small-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #c2c2c2;
+    font-size: large;
+    vertical-align: middle;
+    margin: 0;
+}
+
+.page-tab {
+    width: 140px;
+    height: 50px;
+    border: 1px solid black;
+    margin: 0 auto;
+    display: table;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+.page-tab.selected {
+    background-color: #f4fe96;
+}
+
+.page-tab > .page-tab-image {
+    float: left;
+    width: 30%;
+    height:100%;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.page-tab >.page-tab-image >.circle {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    margin: auto;
+    background-color: #d7d7d7;
+    padding: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.page-tab > .page-tab-content {
+    float: right;
+    width: 70%;
+    height:100%;
+    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Login Page */
+
+.login-input {
+    margin: 5px 0 5px 0;
+}
+
+.login-link {
+    float: right;
+    margin-top: 10px;
+}
+
+.login-button {
+    padding: 10px 20px;
+    background-color: #58f100;
+}
+
+.login-container {
+    width: 60%;
+    max-width: 300px;
+    margin: 50px auto;
+    background-color: #74d034;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 50px;
+    border: solid 10px #007c30;
+    color: #007c30;
+}
+
+
+/* Register Page */
+
+#sign-up-btn {
+    float: right;
+}
+
+.register-link {
+    float: left;
+    margin-top: 8px;
+}
+
+.checkbox {
+    margin: 10px 0 10px 0;
+}
+
+.available {
+    background-color: greenyellow;
+}
+
+.unavailable, .empty-required, .not-match {
+    background-color: orangered;
+}
+
+.not-match::-webkit-input-placeholder, .empty-required::-webkit-input-placeholder, .unavailable::-webkit-input-placeholder {
+    color: whitesmoke;
+}

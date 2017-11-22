@@ -46,136 +46,171 @@
 		}
 	}
 %>
+
 <html>
 <head>
-	<title>Select Location</title>
-	<link rel="stylesheet" type="text/css" href="../css/default_style.css">
-	<link rel="stylesheet" type="text/css" href="../css/order.css">
-	<link rel="stylesheet" type="text/css" href="../css/header.css">
+    <title>DAGO-JEK | Order</title>
+    <link rel="stylesheet" type="text/css" href="../css/new_style.css">
+
+	<%
+		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
+		URL urlAddress = new URL(address);
+		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
+		httpPost.setRequestMethod("POST");
+		httpPost.setDoOutput(true);
+		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
+		writer.writeBytes("action=getUser&id="+id);
+		writer.flush();
+		writer.close();
+		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+		String inputLine;
+		StringBuilder res = new StringBuilder(); 
+		int respCode = httpPost.getResponseCode();
+		String respMsg = httpPost.getResponseMessage();
+		while ((inputLine = buffer.readLine()) != null) {
+			res.append(inputLine);
+		}
+		buffer.close();
+		String uJson = res.toString();
+		User user = new Gson().fromJson(uJson,User.class);
+		Driver driver = new Driver();
+		String dJson = null;
+		if ("driver".equals(user.getStatus())) {
+			httpPost = (HttpURLConnection) urlAddress.openConnection();
+			httpPost.setRequestMethod("POST");
+			httpPost.setDoOutput(true);
+			writer = new DataOutputStream(httpPost.getOutputStream());
+			writer.writeBytes("action=getDriver&id="+user.getId());
+			writer.flush();
+			writer.close();
+			buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+			res = new StringBuilder();
+			while ((inputLine = buffer.readLine()) != null) {
+				res.append(inputLine);
+			}
+			dJson = res.toString();
+			driver = new Gson().fromJson(dJson,Driver.class);
+		}
+	%>
+
 </head>
 <body>
-	<div class="frame">
-		<div class="header">
-            <%
-				String address = "http://localhost:8080/Olride/IDServices/IdentityService";
-				URL urlAddress = new URL(address);
-				HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
-				httpPost.setRequestMethod("POST");
-				httpPost.setDoOutput(true);
-				DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-				writer.writeBytes("action=getUser&id="+id);
-				writer.flush();
-				writer.close();
-				BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-				String inputLine;
-				StringBuilder res = new StringBuilder(); 
-				int respCode = httpPost.getResponseCode();
-				String respMsg = httpPost.getResponseMessage();
-				while ((inputLine = buffer.readLine()) != null) {
-					res.append(inputLine);
-				}
-				buffer.close();
-				String uJson = res.toString();
-				User user = new Gson().fromJson(uJson,User.class);
-				Driver driver = new Driver();
-				String dJson = null;
-				if ("driver".equals(user.getStatus())) {
-					httpPost = (HttpURLConnection) urlAddress.openConnection();
-					httpPost.setRequestMethod("POST");
-					httpPost.setDoOutput(true);
-					writer = new DataOutputStream(httpPost.getOutputStream());
-					writer.writeBytes("action=getDriver&id="+user.getId());
-					writer.flush();
-					writer.close();
-					buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-					res = new StringBuilder();
-					while ((inputLine = buffer.readLine()) != null) {
-						res.append(inputLine);
-					}
-					dJson = res.toString();
-					driver = new Gson().fromJson(dJson,Driver.class);
-				}
-            %>
-            <%@include file="../template/header.jsp"%>
-		</div>
-		<div class="menu_container">
-			<%@include file="../template/menu.jsp"%>
-		</div>
-		<script>
-        		document.getElementById("order_link").setAttribute("class", "menu menu_active");
-        </script>
-		<div class="order_container">
-			<div class="subheader">
-        		<div class="title"><h1>Make an Order</h1></div>
-        	</div>
-			<div class="submenu_container">
-				<div class="submenu submenu_active">
-					<div class="step_num">
-						<p>1</p>
-					</div>
-					<div class="step_name">
-						<p>Select Destination</p>
-					</div>
-				</div>
-				<div class="submenu">
-					<div class="step_num">
-						<p>2</p>
-					</div>
-					<div class="step_name">
-						<p>Select a Driver</p>
-					</div>
-				</div>
-				<div class="submenu">
-					<div class="step_num">
-						<p>3</p>
-					</div>
-					<div class="step_name">
-						<p>Chat Driver</p>
-					</div>
-				</div>
-				<div class="submenu">
-					<div class="step_num">
-						<p>4</p>
-					</div>
-					<div class="step_name">
-						<p>Complete Order</p>
-					</div>
-				</div>
-			</div>
-			<form method="POST" id="select_loc" name="submit_select_loc" action="select_driver.jsp">
-				<div class="content" id="select_destination">
-					<div>
-						<span class="loc_form_label">Picking point</span>
-						<input type="text" name="pickLoc" id="picking_point">
-					</div>
-					<div>
-						<span class="loc_form_label">Destination</span>
-						<input type="text" name="destLoc" id="destination">
-					</div>
-					<div>
-						<span class="loc_form_label">Preferred driver</span>
-						<input type="text" name="preferred_driver" placeholder="(optional)">
-					</div>
-					<div>
-						<input type="hidden" name="action" value="selectLocation">
-						<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
-						<input type="submit" value="Next" class="button green" id="loc_button">
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-</body>
+    <div class="container">
+        <div class="row">
+            <div class="col-3"><span class="logo"></span></div>
+            <div class="col-3 text-right">
+                <p class="user-action">
+                    Hi, <b><% out.println(user.getUsername()); %></b> !<br>
+                    <a href="../IDServices/Logout?id=<%out.println(user.getId());%>">Logout</a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <a class="col-2 tab text-center active" href="../order/order.jsp?id=<%out.println(user.getId());%>">ORDER</a>
+            <a class="col-2 tab text-center" href="../history/transaction_history.jsp?id=<%out.println(user.getId());%>">HISTORY</a>
+            <a class="col-2 tab text-center" href="../profile/profile.jsp?id=<%out.println(user.getId());%>">MY PROFILE</a>
+        </div>
+        <div class="row">
+            <div class="col-6"><h1>MAKE AN ORDER</h1></div>
+            <span id="customer-id" style="display: none">VGdWZUZ2dlJlUkM5eWpjVDcyQXJoZz09</span>
+        </div>
+        <div class="row">
+        <div style="width:25%; float:left">
+                <div id="page-tab-location" class="page-tab selected">
+                    <div class="page-tab-image">
+                        <div class="circle">1</div>
+                    </div>
+                    <div class="page-tab-content">
+                        Select Destination
+                    </div>
+                </div>
+            </div>
+            <div style="width:25%; float:left">
+                <div id="page-tab-driver" class="page-tab">
+                    <div class="page-tab-image">
+                        <div class="circle">2</div>
+                    </div>
+                    <div class="page-tab-content">
+                        Select a Driver
+                    </div>
+                </div>
+            </div>
+            <div style="width:25%; float:left">
+                <div id="page-tab-finish" class="page-tab">
+                    <div class="page-tab-image">
+                        <div class="circle">3</div>
+                    </div>
+                    <div class="page-tab-content">
+                        Chat Driver
+                    </div>
+                </div>
+            </div>
+            <div style="width:25%; float:left">
+                <div id="page-tab-finish" class="page-tab">
+                    <div class="page-tab-image">
+                        <div class="circle">4</div>
+                    </div>
+                    <div class="page-tab-content">
+                        Complete your order
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div id="order-page-location">
+            <form method="POST" id="submit_select_loc" name="submit_select_loc" action="#" onsubmit="return validateForm()">
+                <div class="row">
+                    <div class="col-2" style="line-height: 40px">
+                        <span style="padding-left: 30%;">Picking Point</span> <br>
+                    </div>
+                    <div class="col-4" style="line-height: 30px">
+                        <input id="picking_point" style="width: 80%;height: 30px;padding-left: 5px;font-size: medium" type="text" name="pickLoc" placeholder="Pick up point">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="line-height: 40px">
+                        <span style="padding-left: 30%">Destination</span> <br>
+                    </div>
+                    <div class="col-4" style="line-height: 30px">
+                        <input id="destination" style="width: 80%; height: 30px;padding-left: 5px;font-size: medium" type="text" name="destLoc" placeholder="Destination">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="line-height: 40px">
+                        <span style="padding-left: 30%">Preferred Driver</span>
+                    </div>
+                    <div class="col-4">
+                        <input id="orderPreferredDriver" style="width: 80%;height: 30px;padding-left: 5px;font-size: medium" type="text" name="preferred_driver" placeholder="(optional)"><br>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+                <div class="row text-center">
+					<input type="hidden" name="action" value="selectLocation">
+					<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
+                    <input type="submit" class="btn green" style="font-size: 2em; width:auto" value="Next" id="loc_button"/>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<script type="text/javascript">
+    
+	<script type="text/javascript">
+		console.log(JSON.stringify(document));
         function validateForm() {
-            if(document.submit_select_loc.picking_point.value == null || document.submit_select_loc.picking_point.value == "") {
+            if(document.getElementById("picking_point").value == null || document.getElementById("picking_point").value == "") {
                 window.alert("Please fill the picking location");
                 return false;
-            } else if (document.submit_select_loc.destination.value == null || document.submit_select_loc.destination.value == "") {
-                winddow.alert("Please fill the destination location");
+			}
+            if (document.getElementById("destination").value == null || document.getElementById("destination").value == "") {
+                window.alert("Please fill the destination location");
                 return false;
             }
+			return true;
         }
-</script>
+	</script>
+
+</body>
 </html>
