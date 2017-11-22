@@ -41,8 +41,9 @@ public class Logout extends HttpServlet {
 		writer.flush();
 		writer.close(); 
 		int respCode = httpPost.getResponseCode();
-		if ("expired".equals(request.getParameter("action")) && respCode == 200) {
-			request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Your session has expired\";</script>");
+		if ("forbid".equals(request.getParameter("action")) && respCode == 200) {
+			//request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Your session has expired\";</script>");
+			request.setAttribute("script","<script>document.getElementById(\"error\").innerHTML=\"Please log out from other browsers and computers first!\";</script>");
 			request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 		}
 		else if (request.getParameter("action") == null && respCode == 200) {

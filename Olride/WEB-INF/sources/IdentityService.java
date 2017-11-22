@@ -118,6 +118,18 @@ public class IdentityService extends HttpServlet {
 					out.println("expired");
 				}				
 			}
+		} else if ("validateAccess".equals(action)) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			String token = request.getParameter("token");
+			String userAgent = request.getParameter("agent");
+			String ipAddress = request.getParameter("ip");
+
+			user = getUserByToken(token);
+			if (validateAccess(id,token,userAgent,ipAddress)) {
+				out.println("valid");
+			} else {
+				out.println("forbidden");
+			}
 		} else if ("getUserFromToken".equals(action)) {
 			String token = request.getParameter("token");
 			user = getUserByToken(token);
