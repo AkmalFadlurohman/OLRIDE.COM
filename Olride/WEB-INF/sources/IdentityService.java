@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import java.net.URL;
+import java.net.*;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import java.sql.Connection;
@@ -40,6 +40,7 @@ public class IdentityService extends HttpServlet {
 	throws ServletException,IOException {
 		User user = new User();
 		Driver driver = new Driver();
+
 		PrintWriter out = response.getWriter();
 
 		String action = request.getParameter("action");
@@ -56,11 +57,25 @@ public class IdentityService extends HttpServlet {
 		} else if ("login".equals(action)) {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
+			String userAgent = request.getParameter("agent");
+			String ipAddress = request.getParameter("ip");
 			if (validateLogin(username,password)) {
-				generateToken(username);
-				user = getUserByUsername(username);
-				String uJson = new Gson().toJson(user);
-				out.println(uJson);
+				if (checkLoginStatus(username)) {
+					user = getUserByUsername(username);
+					int id = user.getId();
+					String token = user.getToken();
+					if (validateAccess(id,token,userAgent,ipAddress)) {
+						String uJson = new Gson().toJson(user);
+						out.println(uJson);
+					} else {
+						out.println("forbidden");
+					}
+				} else {
+					generateToken(username,userAgent,ipAddress);
+					user = getUserByUsername(username);
+					String uJson = new Gson().toJson(user);
+					out.println(uJson);
+				}
 			} else {
 				out.println("invalid");
 			}
@@ -72,9 +87,11 @@ public class IdentityService extends HttpServlet {
 			String cpassword = request.getParameter("confirm_password");
 			String phone = request.getParameter("phone");
 			String status = request.getParameter("status");
+			String userAgent = request.getParameter("agent");
+			String ipAddress = request.getParameter("ip");
 			if (password.equals(cpassword) && validateRegister(username)) {
 				insertUserToDB(fullname,username,email,password,phone,status);
-				generateToken(username);
+				generateToken(username,userAgent,ipAddress);
 				user = getUserByUsername(username);
 				if ("driver".equals(user.getStatus())) {
 					insertDriverToDB(user.getId());
@@ -115,11 +132,6 @@ public class IdentityService extends HttpServlet {
 				String prefDriverJson = new Gson().toJson(user);
 				out.println(prefDriverJson);		
 			}	
-		} else if ("upvoteDriver".equals(action)) {
-			int id = Integer.parseInt(request.getParameter("id"));
-			int score = Integer.parseInt(request.getParameter("score"));
-			upvoteDriver(id,score);
-			response.setStatus(200);
 		} else if ("addLocation".equals(action) || "updateLocation".equals(action) || "deleteLocation".equals(action) || "completeOrder".equals(action) || "hideOrder".equals(action)){
 			int id = Integer.parseInt(request.getParameter("id"));
 			Cookie cookies[] = request.getCookies();
@@ -470,6 +482,53 @@ public class IdentityService extends HttpServlet {
 		}
 		return valid;
 	}
+	public boolean checkLoginStatus(String username) {
+		User  user = new User();
+		user = getUserByUsername(username);
+		return (user.getToken() != null);
+	}
+	public boolean validateAccess(int id,String token,String userAgent,String ipAddress) {
+		Connection connect = null;
+		ResultSet resultSet = null;
+		Statement statement = null;
+		byte[] sharedSecret = new byte[64];
+		boolean valid = false;
+
+		if (validateToken(id,token)) {
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/olride_IDServices","root","");
+				if (connect != null) {
+					statement = connect.createStatement();
+					resultSet = statement.executeQuery("select secret from user where id='"+id+"'");
+					if (resultSet.next()) {
+						sharedSecret = resultSet.getBytes("secret");
+						try {
+							SignedJWT signedJWT = SignedJWT.parse(token);						
+							JWSVerifier verifier = new MACVerifier(sharedSecret);
+							if (signedJWT.verify(verifier)) {
+								String registeredAgent = (String) signedJWT.getJWTClaimsSet().getClaim("registeredAgent");
+								String registeredIP = (String) signedJWT.getJWTClaimsSet().getClaim("registeredIP");
+								if (registeredAgent.equals(userAgent) && registeredIP.equals(ipAddress)) {
+									valid = true;
+								}							
+							}
+						} catch(ParseException e ) {
+							e.printStackTrace();
+						} catch(JOSEException e) {
+							e.printStackTrace();
+						}
+						connect.close();			
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return valid;
+	}
 	public boolean validateRegister(String username) {
 		Connection connect = null;
 		Statement statement = null;
@@ -498,7 +557,7 @@ public class IdentityService extends HttpServlet {
 		return valid;
 	}
 	
-	public void generateToken(String username) {
+	public void generateToken(String username,String userAgent,String ipAddress) {
 		SecureRandom random = new SecureRandom();
 		byte[] sharedSecret = new byte[64];
 		random.nextBytes(sharedSecret);
@@ -509,7 +568,9 @@ public class IdentityService extends HttpServlet {
 			JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 			.subject(username)
 			.issuer("olride.com")
-			.expirationTime(new Date(new Date().getTime() + 7200 * 1000))
+			.expirationTime(new Date(new Date().getTime() + 180 * 1000))
+			.claim("registeredAgent",userAgent)
+			.claim("registeredIP",ipAddress)
 			.build();
 			
 			SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS512), claimsSet);
@@ -567,7 +628,7 @@ public class IdentityService extends HttpServlet {
 							Date curDate = new Date(new Date().getTime());
 							if (curDate.before(expDate) && token.equals(userToken)) {
 								valid = true;
-							}							
+							}						
 						}
 					} catch(ParseException e ) {
 						e.printStackTrace();
