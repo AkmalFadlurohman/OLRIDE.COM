@@ -49,7 +49,7 @@
 
 <html>
 <head>
-    <title>DAGO-JEK | Order</title>
+    <title>Select Location</title>
     <link rel="stylesheet" type="text/css" href="../css/new_style.css">
 
 	<%
@@ -96,23 +96,13 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-3"><span class="logo"></span></div>
-            <div class="col-3 text-right">
-                <p class="user-action">
-                    Hi, <b><% out.println(user.getUsername()); %></b> !<br>
-                    <a href="../IDServices/Logout?id=<%out.println(user.getId());%>">Logout</a>
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <a class="col-2 tab text-center active" href="../order/order.jsp?id=<%out.println(user.getId());%>">ORDER</a>
-            <a class="col-2 tab text-center" href="../history/transaction_history.jsp?id=<%out.println(user.getId());%>">HISTORY</a>
-            <a class="col-2 tab text-center" href="../profile/profile.jsp?id=<%out.println(user.getId());%>">MY PROFILE</a>
-        </div>
+        <%@include file="../template/new_header.jsp"%>
+		<script>
+				var menu = document.getElementById("order_link");
+        		menu.setAttribute("class", menu.getAttribute("class")+" active");
+        </script>
         <div class="row">
             <div class="col-6"><h1>MAKE AN ORDER</h1></div>
-            <span id="customer-id" style="display: none">VGdWZUZ2dlJlUkM5eWpjVDcyQXJoZz09</span>
         </div>
         <div class="row">
         <div style="width:25%; float:left">
@@ -159,7 +149,7 @@
         <br>
         <br>
         <div id="order-page-location">
-            <form method="POST" id="submit_select_loc" name="submit_select_loc" action="#" onsubmit="return validateForm()">
+            <form method="POST" id="submit_select_loc" name="submit_select_loc" action="select_driver.jsp" onsubmit="return validateForm()">
                 <div class="row">
                     <div class="col-2" style="line-height: 40px">
                         <span style="padding-left: 30%;">Picking Point</span> <br>
@@ -198,7 +188,6 @@
 
     
 	<script type="text/javascript">
-		console.log(JSON.stringify(document));
         function validateForm() {
             if(document.getElementById("picking_point").value == null || document.getElementById("picking_point").value == "") {
                 window.alert("Please fill the picking location");
