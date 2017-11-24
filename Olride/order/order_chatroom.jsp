@@ -1,51 +1,6 @@
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
-<%
-	if (request.getParameter("id") == null) {
-		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
-		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
-	}
-	int id = Integer.parseInt(request.getParameter("id"));
-	Cookie cookies[] = request.getCookies();
-	int j = 0;
-	boolean exist = false;
-	while (!exist && j<cookies.length) {
-		if ("token".equals(cookies[j].getName())) {
-			exist = true;
-		} else {
-			j++;
-		}
-	}
-	if (!exist) {
-		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
-		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
-	} else {
-		String token = cookies[j].getValue();
-		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
-		URL urlAddress = new URL(address);
-		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
-		httpPost.setRequestMethod("POST");
-		httpPost.setDoOutput(true);
-		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-		writer.writeBytes("action=validateToken&id="+id+"&token="+token);
-		writer.flush();
-		writer.close();
-		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-		String inputLine;
-		StringBuilder res = new StringBuilder(); 
-		int respCode = httpPost.getResponseCode();
-		String respMsg = httpPost.getResponseMessage();
-		while ((inputLine = buffer.readLine()) != null) {
-			res.append(inputLine);
-		}
-		buffer.close();
-		String msg = res.toString();
-		if ("expired".equals(msg)) {
-			response.sendRedirect("../IDServices/Logout?action=expired&id="+id);
-		}
-	}
-%>
 
 <html>
 <head>
@@ -54,9 +9,10 @@
 	<link rel="stylesheet" type="text/css" href="../css/new_chat.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 	<link rel="manifest" href="/Olride/script/manifest.json">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 	<%
+		int id = 1;
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
 		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
@@ -166,7 +122,7 @@
             <div class="col-6" style="outline: 1px solid black; height:49px">
                 <div class="row">
                     <div class="col-5">
-                        <textarea rows="3" cols="70" placeholder="Ketik pesanmu disini ..." style="resize:none;outline: 1px solid #ffffff00;box-sizing:border-box"></textarea>
+                        <textarea id="chat-textarea" rows="3" cols="70" placeholder="Ketik pesanmu disini ..." style="resize:none;outline: 1px solid #ffffff00;box-sizing:border-box"></textarea>
                     </div>
                     <div class="col-1" style="padding-top:10px;box-sizing: border-box;">
                         <input id="btn-send-message" class="btn green" type="submit" value="Kirim" style="width:110px">
@@ -190,8 +146,67 @@
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script>
 	<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
-	<script>
 
+	<script>
+		var myId = 1;
+		var otherId = 3;
+
+		// Preparing Angular ---------------------------------------------------------
+		var chatData = {
+			id: 1,
+			participants: [1,3],
+			messages: [
+				{
+					sender : 1,
+					text: "Hallo apa kabar!"
+				},
+				{
+					sender : 3,
+					text: "Iya kabar baik, ini siapa ya?"
+				},
+				{
+					sender : 3,
+					text: "Kamu user 1 bukan? kayaknya aku inget deh"
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+				{
+					sender : 1,
+					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
+				},
+			]
+		};
+	
+		var app =  angular.module('chatApp', ['firebase']);
+		app.controller('chatController', function($scope,$firebaseObject){
+			$scope.messages = chatData.messages;
+			scrollDown();
+		});
+
+		// Preparing FCM -----------------------------------------------------------------
+		var fcmToken = null;
 		var config = {
 			apiKey: "AIzaSyB0KWompT2YoRR99caQcanuxSr-ag5Z6-k",
 			authDomain: "olride-69182.firebaseapp.com",
@@ -213,6 +228,7 @@
 			})
 			.then(function(currentToken) {
 				console.log(currentToken);
+				fcmToken = currentToken;
 			})
 			.catch(function(err) {
 				console.log('Error occured.', err);
@@ -222,41 +238,63 @@
 
 		messaging.onMessage(function(payload) {
 			console.log('onMessage :', payload);
+			var scope = angular.element($("#driver-order-chat")).scope();
+    		scope.$apply(function() {
+        		scope.messages.push({
+					sender: otherId,
+					text: payload.notification.body
+				});
+				scrollDown();
+    		})
 		});
 
-		var chatData = {
-			id: 1,
-			participants: [1,3],
-			messages: [
-				{
-					sender : 1,
-					text: "Hallo apa kabar!"
-				},
-				{
-					sender : 3,
-					text: "Iya kabar baik, ini siapa ya?"
-				},
-				{
-					sender : 3,
-					text: "Kamu user 1 bukan? kayaknya aku inget deh"
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-			]
-		};
-	
-		var app =  angular.module('chatApp',["firebase"]);
-		app.controller('chatController', function($scope,$firebaseObject){
-			// var ref = firebase.database().ref().child("messages");
-			// var syncObject = $firebaseObject(ref);
-			// syncObject.$bindTo($scope, "messages");
-
-			$scope.messages = chatData.messages;
-
-			// $('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
+		// Handle user click in Send button
+		$('#btn-send-message').click(function() {
+			sendMessage(1);
 		});
+
+		// Handle user click enter in chat textarea
+		$("#chat-textarea").keypress(function (e) {
+			if(e.which == 13) {
+				sendMessage(1);
+			}
+    	});
+
+		function sendMessage(uid) {
+			var msg = $('#chat-textarea').val().trim();
+			if (msg) {
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:8123/message/send/' + uid,
+					data: {
+						token: fcmToken,
+						text: msg
+					},
+					success: function(responseData, textStatus, jqXHR) {
+						var value = responseData.someKey;
+						var scope = angular.element($("#driver-order-chat")).scope();
+						scope.$apply(function() {
+							scope.messages.push({
+								sender: myId,
+								text: msg
+							});
+							$('#chat-textarea').val('');
+							scrollDown();
+						})
+					},
+					error: function (responseData, textStatus, errorThrown) {
+						alert('POST failed.');
+					},
+				});
+			} else {
+				alert('Message is empty!');
+			}
+		}
+
+		function scrollDown() {
+			$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
+		}
+
 	</script>
 
 </body>
