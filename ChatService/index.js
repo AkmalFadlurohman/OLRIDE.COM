@@ -74,15 +74,15 @@ app.post('/message/send/:target', function(request, response) {
             }
         })
     }
-    
 
     // Start the request
     requestLib(options, function (error, resp, body) {
         if (!error && resp.statusCode == 200) {
-            console.log(resp)
+            console.log(body)
             response.send("receiving " + JSON.stringify(request.body));
         }
-    })
+    });
+    
 });
 
 

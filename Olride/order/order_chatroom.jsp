@@ -1,7 +1,56 @@
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
+<%
+	if (request.getParameter("id") == null) {
+		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
+		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
+	}
+	int id = Integer.parseInt(request.getParameter("id"));
+	Cookie cookies[] = request.getCookies();
+	int j = 0;
+	boolean exist = false;
+	while (!exist && j<cookies.length) {
+		if ("token".equals(cookies[j].getName())) {
+			exist = true;
+		} else {
+			j++;
+		}
+	}
+	if (!exist) {
+		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
+		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
+	} else {
+		URL ipChecker = new URL("http://checkip.amazonaws.com");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(ipChecker.openStream()));
+		String ipAddress = reader.readLine();
+		String userAgent = request.getHeader("User-Agent");
 
+		String token = cookies[j].getValue();
+		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
+		URL urlAddress = new URL(address);
+		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
+		httpPost.setRequestMethod("POST");
+		httpPost.setDoOutput(true);
+		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
+		writer.writeBytes("action=validateAccess&id="+id+"&token="+token+"&agent="+userAgent+"&ip="+ipAddress);
+		writer.flush();
+		writer.close();
+		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+		String inputLine;
+		StringBuilder res = new StringBuilder(); 
+		int respCode = httpPost.getResponseCode();
+		String respMsg = httpPost.getResponseMessage();
+		while ((inputLine = buffer.readLine()) != null) {
+			res.append(inputLine);
+		}
+		buffer.close();
+		String msg = res.toString();
+		if ("forbidden".equals(msg)) {
+			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
+		}
+	}
+%>
 <html>
 <head>
     <title>Order Chatroom</title>
@@ -12,7 +61,6 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 	<%
-		int id = 1;
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
 		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
@@ -51,6 +99,10 @@
 			dJson = res.toString();
 			driver = new Gson().fromJson(dJson,Driver.class);
 		}
+	%>
+
+	<%
+		int driverId = Integer.parseInt(request.getParameter("selected_driver"));
 	%>
 
 </head>
@@ -112,7 +164,7 @@
         <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController">
             <div class="col-6 chatarea" id="chatarea">
                 <ul class="chatlist">
-					<li ng-repeat="message in messages" ng-class="message.sender == 1 ? 'right' : 'left'">
+					<li ng-repeat="message in messages" ng-class="message.sender == <%out.println(id);%> ? 'right' : 'left'">
                         <div>
                             <p>{{message.text}}</p>
                         </div>
@@ -148,55 +200,14 @@
 	<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
 
 	<script>
-		var myId = 1;
-		var otherId = 3;
+		var myId = <%out.println(id);%>;
+		var otherId = <%out.println(driverId);%>;
 
 		// Preparing Angular ---------------------------------------------------------
 		var chatData = {
 			id: 1,
 			participants: [1,3],
-			messages: [
-				{
-					sender : 1,
-					text: "Hallo apa kabar!"
-				},
-				{
-					sender : 3,
-					text: "Iya kabar baik, ini siapa ya?"
-				},
-				{
-					sender : 3,
-					text: "Kamu user 1 bukan? kayaknya aku inget deh"
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-				{
-					sender : 1,
-					text: "Iya kamu benar! sudah lama kita tidak berjumpa. Terakhir 1 bulan yang lalu sepertinya."
-				},
-			]
+			messages: []
 		};
 	
 		var app =  angular.module('chatApp', ['firebase']);
@@ -237,10 +248,9 @@
 		});
 
 		messaging.onMessage(function(payload) {
-			console.log('onMessage :', payload);
 			var scope = angular.element($("#driver-order-chat")).scope();
     		scope.$apply(function() {
-        		scope.messages.push({
+				scope.messages.push({
 					sender: otherId,
 					text: payload.notification.body
 				});
@@ -292,7 +302,9 @@
 		}
 
 		function scrollDown() {
-			$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
+			setTimeout(function() {
+				$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
+			}, 30);
 		}
 
 	</script>
