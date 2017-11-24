@@ -504,7 +504,7 @@ public class IdentityService extends HttpServlet {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		byte[] sharedSecret = new byte[64];
-		boolean valid = false;
+		boolean valid = true;
 
 		if (validateToken(id,token)) {
 			try {

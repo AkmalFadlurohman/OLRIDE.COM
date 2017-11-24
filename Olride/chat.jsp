@@ -1,106 +1,19 @@
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
-<%
-	if (request.getParameter("id") == null) {
-		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
-		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
-	}
-	int id = Integer.parseInt(request.getParameter("id"));
-	Cookie cookies[] = request.getCookies();
-	int j = 0;
-	boolean exist = false;
-	while (!exist && j<cookies.length) {
-		if ("token".equals(cookies[j].getName())) {
-			exist = true;
-		} else {
-			j++;
-		}
-	}
-	if (!exist) {
-		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
-		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
-	} else {
-		String token = cookies[j].getValue();
-		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
-		URL urlAddress = new URL(address);
-		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
-		httpPost.setRequestMethod("POST");
-		httpPost.setDoOutput(true);
-		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-		writer.writeBytes("action=validateToken&id="+id+"&token="+token);
-		writer.flush();
-		writer.close();
-		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-		String inputLine;
-		StringBuilder res = new StringBuilder(); 
-		int respCode = httpPost.getResponseCode();
-		String respMsg = httpPost.getResponseMessage();
-		while ((inputLine = buffer.readLine()) != null) {
-			res.append(inputLine);
-		}
-		buffer.close();
-		String msg = res.toString();
-		if ("expired".equals(msg)) {
-			response.sendRedirect("../IDServices/Logout?action=expired&id="+id);
-		}
-	}
-%>
 
 <html>
 <head>
     <title>Order Chatroom</title>
-    <link rel="stylesheet" type="text/css" href="../css/new_style.css">
-	<link rel="stylesheet" type="text/css" href="../css/new_chat.css">
+    <link rel="stylesheet" type="text/css" href="css/new_style.css">
+	<link rel="stylesheet" type="text/css" href="css/new_chat.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 	<link rel="manifest" href="/Olride/script/manifest.json">
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
 
-	<%
-		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
-		URL urlAddress = new URL(address);
-		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
-		httpPost.setRequestMethod("POST");
-		httpPost.setDoOutput(true);
-		DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-		writer.writeBytes("action=getUser&id="+id);
-		writer.flush();
-		writer.close();
-		BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-		String inputLine;
-		StringBuilder res = new StringBuilder(); 
-		int respCode = httpPost.getResponseCode();
-		String respMsg = httpPost.getResponseMessage();
-		while ((inputLine = buffer.readLine()) != null) {
-			res.append(inputLine);
-		}
-		buffer.close();
-		String uJson = res.toString();
-		User user = new Gson().fromJson(uJson,User.class);
-		Driver driver = new Driver();
-		String dJson = null;
-		if ("driver".equals(user.getStatus())) {
-			httpPost = (HttpURLConnection) urlAddress.openConnection();
-			httpPost.setRequestMethod("POST");
-			httpPost.setDoOutput(true);
-			writer = new DataOutputStream(httpPost.getOutputStream());
-			writer.writeBytes("action=getDriver&id="+user.getId());
-			writer.flush();
-			writer.close();
-			buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-			res = new StringBuilder();
-			while ((inputLine = buffer.readLine()) != null) {
-				res.append(inputLine);
-			}
-			dJson = res.toString();
-			driver = new Gson().fromJson(dJson,Driver.class);
-		}
-	%>
-
 </head>
 <body>
     <div class="container">
-        <%@include file="../template/new_header.jsp"%>
 		<script>
 				var menu = document.getElementById("order_link");
         		menu.setAttribute("class", menu.getAttribute("class")+" active");
@@ -179,7 +92,7 @@
         <br>
 
 		<div class="row text-center">
-			<a id="btn-cancel" href="../order/order.jsp?id=<%out.println(user.getId());%>" onclick="return confirm('Apakah kamu yakin ingin membatalkan pesanan?');" class="btn red" style="width:150px; color:white; font-size:larger; padding: 10px 25px">CLOSE</a>
+			<a id="btn-cancel" href="../order/order.jsp?id=1" onclick="return confirm('Apakah kamu yakin ingin membatalkan pesanan?');" class="btn red" style="width:150px; color:white; font-size:larger; padding: 10px 25px">CLOSE</a>
 		</div>
 
 		<br>
