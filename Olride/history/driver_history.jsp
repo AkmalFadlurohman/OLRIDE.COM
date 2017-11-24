@@ -57,8 +57,6 @@
     <link rel="stylesheet" type="text/css" href="../css/default_style.css">
     <link rel="stylesheet" type="text/css" href="../css/history.css">
     <link rel="stylesheet" type="text/css" href="../css/header.css">
-    
-    <script type="text/javascript" src="format_date.js"></script>
 </head>
 <body>
     <div class="frame">
