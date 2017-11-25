@@ -9,6 +9,18 @@ const bodyParser     = require('body-parser');
 const port           = 8123;
 const app            = express();
 
+
+app.use(bodyParser.json());         // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+})); 
+
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
+
 // Membuat chatroom baru dengan anggota participant1 dan participant2
 function createChatroom(participant1,participant2) {
     var chatroom = {"participants": [participant1,participant2], "messages": []};
@@ -29,16 +41,6 @@ function pushToChatroom(chatId,senderId,content) {
         console.log("Inserted new message :" + JSON.stringify(message,null,1) + " to chatroom with id: "+chatId);
     })
 }
-app.use(bodyParser.json());         // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true
-})); 
-
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Origin', '*');
-    next();
-});
 
 // Menyimpan identitas (token FCM) dari masing-masing pengguna yang sedang online
 // Menerima request dari user A untuk chat ke user B, lalu membuat request ke FCM untuk pengiriman pesan ke token FCM user B.

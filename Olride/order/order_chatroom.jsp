@@ -2,7 +2,7 @@
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
 <%
-	if (request.getParameter("id") == null) {
+	/*if (request.getParameter("id") == null) {
 		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
 		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 	}
@@ -10,7 +10,7 @@
 	Cookie cookies[] = request.getCookies();
 	int j = 0;
 	boolean exist = false;
-	while (!exist && j<cookies.length) {
+	while (!exist && j<!cookies.length) {
 		if ("token".equals(cookies[j].getName())) {
 			exist = true;
 		} else {
@@ -49,7 +49,7 @@
 		if ("forbidden".equals(msg)) {
 			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
-	}
+	}*/
 %>
 <html>
 <head>
@@ -59,8 +59,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 	<link rel="manifest" href="/Olride/script/manifest.json">
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-
 	<%
+		int id = 1;
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
 		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
@@ -102,7 +102,7 @@
 	%>
 
 	<%
-		int driverId = Integer.parseInt(request.getParameter("selected_driver"));
+		int driverId = 2;//Integer.parseInt(request.getParameter("selected_driver"));
 	%>
 
 </head>
@@ -159,8 +159,7 @@
             </div>
         </div>
         <br>
-        <br>
-        
+        <br> 
         <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController">
             <div class="col-6 chatarea" id="chatarea">
                 <ul class="chatlist">
@@ -204,16 +203,59 @@
 		var otherId = <%out.println(driverId);%>;
 
 		// Preparing Angular ---------------------------------------------------------
-		var chatData = {
-			id: 1,
-			participants: [1,3],
-			messages: []
-		};
 	
 		var app =  angular.module('chatApp', ['firebase']);
 		app.controller('chatController', function($scope,$firebaseObject){
-			$scope.messages = chatData.messages;
+			$scope.myId
+			$scope.messages = $scope.chatData.messages;
 			scrollDown();
+			$scope.chatData = {
+				id: 1,
+				participants: [1,3],
+				messages: []
+			};
+			$scope.fetch = function (participant1,participant2) {
+				var data = {
+					participant1: participant1,
+					participant2: participant2
+				};
+				$http.post('http://localhost:8123/chatroom/fetch', JSON.stringify(data)).then(
+				function (response) {
+					if (response.data) {
+						var chatRoom = JSON.parse(response.data);
+						$scope.chatData.id = chatRoom._id;
+						$scope.chatData.participants = chatroom.participants;
+						$scope.
+					}
+				}, function (response) {
+					$scope.msg = "Service not Exists";
+				});
+			};
+			$scope.create = function (participant1,participant2) {
+				var data = {
+					participant1: participant1,
+					participant2: participant2
+				};
+				$http.post('http://localhost:8123/chatroom/create', JSON.stringify(data)).then(
+				function (response) {
+					if (response.data) $scope.msg = response.data;
+				}, function (response) {
+					$scope.msg = "Service not Exists";
+				});
+			};
+			$scope.push = function (chatId,senderId,content) {
+				var data = {
+					chatId: chatId,
+					senderId: senderId,
+					content: content
+				};
+				$http.post('http://localhost:8123/chatroom/push', JSON.stringify(data)).then(
+				function (response) {
+					if (response.data) $scope.msg = response.data;
+				}, function (response) {
+					$scope.msg = "Service not Exists";
+				});
+			};
 		});
 
 		// Preparing FCM -----------------------------------------------------------------
