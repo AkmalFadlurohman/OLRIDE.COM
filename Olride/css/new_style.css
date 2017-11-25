@@ -195,11 +195,11 @@ body {
 
 .location-list {
     line-height: 1.9em;
-    list-style-image: url('/img/ic_triangle.png');
+    list-style-image: url('/Olride/img/ic_triangle.png');
 }
 
 .edit:after {
-    background-image: url('/img/ic_edit.jpg');
+    background-image: url('/Olride/img/ic_edit.jpg');
     background-size: 45px 45px;
     display: inline-block;
     width: 45px;
@@ -220,7 +220,7 @@ table, th, td {
 }
 
 .action-edit {
-    background-image: url('/img/ic_edit.jpg');
+    background-image: url('/Olride/img/ic_edit.jpg');
     background-size: 25px 25px;
     display: inline-block;
     width: 25px;
@@ -231,7 +231,7 @@ table, th, td {
 }
 
 .action-save {
-    background-image: url('/img/ic_edit.jpg');
+    background-image: url('/Olride/img/ic_edit.jpg');
     background-size: 25px 25px;
     display: inline-block;
     width: 25px;
@@ -242,7 +242,7 @@ table, th, td {
 }
 
 .action-delete {
-    background-image: url('/img/ic_close.png');
+    background-image: url('/Olride/img/ic_close.png');
     background-size: 17px 17px;
     display: inline-block;
     width: 17px;
