@@ -125,10 +125,14 @@ public class IdentityService extends HttpServlet {
 			String ipAddress = request.getParameter("ip");
 
 			user = getUserByToken(token);
-			if (validateAccess(id,token,userAgent,ipAddress)) {
-				out.println("valid");
+			if (validateToken(id,token)) {
+				if (validateAccess(id,token,userAgent,ipAddress)) {
+					out.println("valid");
+				} else {
+					out.println("forbidden");
+				}
 			} else {
-				out.println("forbidden");
+				out.println("expired");
 			}
 		} else if ("getUserFromToken".equals(action)) {
 			String token = request.getParameter("token");
@@ -506,38 +510,36 @@ public class IdentityService extends HttpServlet {
 		byte[] sharedSecret = new byte[64];
 		boolean valid = false;
 
-		if (validateToken(id,token)) {
-			try {
-				Class.forName("com.mysql.jdbc.Driver");
-				connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/olride_IDServices","root","");
-				if (connect != null) {
-					statement = connect.createStatement();
-					resultSet = statement.executeQuery("select secret from user where id='"+id+"'");
-					if (resultSet.next()) {
-						sharedSecret = resultSet.getBytes("secret");
-						try {
-							SignedJWT signedJWT = SignedJWT.parse(token);						
-							JWSVerifier verifier = new MACVerifier(sharedSecret);
-							if (signedJWT.verify(verifier)) {
-								String registeredAgent = (String) signedJWT.getJWTClaimsSet().getClaim("registeredAgent");
-								String registeredIP = (String) signedJWT.getJWTClaimsSet().getClaim("registeredIP");
-								if (registeredAgent.equals(userAgent) && registeredIP.equals(ipAddress)) {
-									valid = true;
-								}							
-							}
-						} catch(ParseException e ) {
-							e.printStackTrace();
-						} catch(JOSEException e) {
-							e.printStackTrace();
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/olride_IDServices","root","");
+			if (connect != null) {
+				statement = connect.createStatement();
+				resultSet = statement.executeQuery("select secret from user where id='"+id+"'");
+				if (resultSet.next()) {
+					sharedSecret = resultSet.getBytes("secret");
+					try {
+						SignedJWT signedJWT = SignedJWT.parse(token);						
+						JWSVerifier verifier = new MACVerifier(sharedSecret);
+						if (signedJWT.verify(verifier)) {
+							String registeredAgent = (String) signedJWT.getJWTClaimsSet().getClaim("registeredAgent");
+							String registeredIP = (String) signedJWT.getJWTClaimsSet().getClaim("registeredIP");
+							if (registeredAgent.equals(userAgent) && registeredIP.equals(ipAddress)) {
+								valid = true;
+							}							
 						}
-						connect.close();			
+					} catch(ParseException e ) {
+						e.printStackTrace();
+					} catch(JOSEException e) {
+						e.printStackTrace();
 					}
+					connect.close();			
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();;
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		return valid;
 	}

@@ -46,7 +46,9 @@
 		}
 		buffer.close();
 		String msg = res.toString();
-		if ("forbidden".equals(msg)) {
+		if ("expired".equals(msg)) {
+			response.sendRedirect("../IDServices/Logout?action=expire&id="+id);
+		} else if ("forbidden".equals(msg)) {
 			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
 	}*/
