@@ -3,6 +3,7 @@
 const express        = require('express');
 const requestLib     = require('request');
 const MongoClient    = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
 var url = "mongodb://localhost:27017/olride_ChatServices";
 const bodyParser     = require('body-parser');
 const port           = 8123;
@@ -36,7 +37,7 @@ function pushToChatroom(chatId,senderId,content) {
     var message = {"sender": senderId,"content":content};
     MongoClient.connect(url, function(err, db) {
         db.collection("chatrooms").update(
-            { _id: chatId },
+            { "_id": ObjectId(chatId) },
             { $push: { messages : message }}
         )
         console.log("Inserted new message :" + JSON.stringify(message,null,1) + " to chatroom with id: "+chatId);
@@ -114,12 +115,13 @@ app.post('/chatroom/fetch', function(request, response) {
     });
 });
 
-// Pemanggilan prosedur pushToChatroom melalui ajax request
+// Handle pushing new message to database
 app.post('/chatroom/push', function(request, response) {
-    var chatId = parseInt(request.body.chatId,10);
-    var senderId = parseInt(request.body.senderId,10);
-    var content = request.body.text;
+    var chatId = request.body.chatId;
+    var senderId = parseInt(request.body.sender,10);
+    var content = request.body.content;
     pushToChatroom(chatId,senderId,content);
+    response.send("receiving " + JSON.stringify(request.body));
 });
 
 // Menerima request untuk mengirimkan pesan ke :target, awalnya perlu dilakukan

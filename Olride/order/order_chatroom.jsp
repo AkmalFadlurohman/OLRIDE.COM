@@ -2,7 +2,7 @@
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
 <%
-	/*if (request.getParameter("id") == null) {
+	if (request.getParameter("id") == null) {
 		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
 		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 	}
@@ -10,7 +10,7 @@
 	Cookie cookies[] = request.getCookies();
 	int j = 0;
 	boolean exist = false;
-	while (!exist && j<!cookies.length) {
+	while (!exist && j<cookies.length) {
 		if ("token".equals(cookies[j].getName())) {
 			exist = true;
 		} else {
@@ -46,10 +46,12 @@
 		}
 		buffer.close();
 		String msg = res.toString();
-		if ("forbidden".equals(msg)) {
+		if ("expired".equals(msg)) {
+			response.sendRedirect("../IDServices/Logout?action=expire&id="+id);
+		} else if ("forbidden".equals(msg)) {
 			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
-	}*/
+	}
 %>
 <html>
 <head>
@@ -60,7 +62,6 @@
 	<link rel="manifest" href="/Olride/script/manifest.json">
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<%
-		int id = 1;
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
 		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
@@ -102,7 +103,10 @@
 	%>
 
 	<%
-		int driverId = 2;//Integer.parseInt(request.getParameter("selected_driver"));
+		int driverId = Integer.parseInt(request.getParameter("selected_driver"));
+		String pickLoc = request.getParameter("pickLoc");
+		String destLoc = request.getParameter("destLoc");
+		int selectedDriverID = Integer.parseInt(request.getParameter("selected_driver"));
 	%>
 
 </head>
@@ -170,10 +174,10 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-6" style="outline: 1px solid black; height:49px">
+            <div class="col-6" style="outline: 1px solid black; height:57px">
                 <div class="row">
                     <div class="col-5">
-                        <textarea id="chat-textarea" rows="3" cols="70" placeholder="Type your message here ..." style="resize:none;outline: 1px solid #ffffff00;box-sizing:border-box"></textarea>
+                        <textarea id="chat-textarea" rows="4" cols="70" placeholder="Type your message here ..." style="resize:none;outline: 1px solid #ffffff00;box-sizing:border-box"></textarea>
                     </div>
                     <div class="col-1" style="padding-top:10px;box-sizing: border-box;">
                         <input id="btn-send-message" class="btn green" type="submit" value="Send" style="width:110px">
@@ -186,7 +190,13 @@
         <br>
 
 		<div class="row text-center">
-			<a id="btn-cancel" href="../order/order.jsp?id=<%out.println(user.getId());%>" onclick="return confirm('Are you sure you want to cancel tis order?');" class="btn red" style="width:150px; color:white; font-size:larger; padding: 10px 25px">CLOSE</a>
+			<form method="post"  action="complete_order.jsp">
+				<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
+				<input type="hidden" name="pickLoc" value=<%out.println(pickLoc);%>>
+				<input type="hidden" name="destLoc" value=<%out.println(destLoc);%>>
+				<input type="hidden" name="selected_driver" value=<%out.println(selectedDriverID);%>>
+				<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" onclick="return confirm('Are you sure you want to finish chatting with your driver?');" style="width:150px; color:white; font-size:larger; padding: 10px 25px">
+			</form>
 		</div>
 
 		<br>
@@ -208,11 +218,8 @@
 		app.controller('chatController', function($scope,$firebaseObject,$http){
 			$scope.myId = <%out.println(id);%>;
 			$scope.otherId = <%out.println(driverId);%>;
-			//$scope.messages = $scope.chatData.messages;
-			scrollDown();
 			$scope.message = null;
 			$scope.chatRoom = null;
-			//$scope.chatData = null;
 
 			$scope.initChatroom = function (participant1,participant2) {
 				var data = {
@@ -223,9 +230,7 @@
 				function (response) {
 					if (response.data === "Not available") {
 						createChatroom(participant1,participant2);
-						$scope.message = "Chatroom does not exist"
 					} else {
-						$scope.message = "Chatroom already exist"
 						$scope.chatRoom = response.data;
 					}
 				});
@@ -312,6 +317,7 @@
 		function sendMessage(uid) {
 			var msg = $('#chat-textarea').val().trim();
 			if (msg) {
+				var scope = angular.element($("#driver-order-chat")).scope();
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost:8123/message/send/' + uid,
@@ -321,7 +327,21 @@
 					},
 					success: function(responseData, textStatus, jqXHR) {
 						var value = responseData.someKey;
-						var scope = angular.element($("#driver-order-chat")).scope();
+					},
+					error: function (responseData, textStatus, errorThrown) {
+						alert('POST failed.');
+					},
+				});
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:8123/chatroom/push',
+					data: {
+						chatId: scope.chatRoom._id,
+						sender: myId,
+						content: msg
+					},
+					success: function(responseData, textStatus, jqXHR) {
+						var value = responseData.someKey;
 						scope.$apply(function() {
 							scope.chatRoom.messages.push({
 								sender: myId,
@@ -345,7 +365,6 @@
 				$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
 			}, 30);
 		}
-
 	</script>
 
 </body>

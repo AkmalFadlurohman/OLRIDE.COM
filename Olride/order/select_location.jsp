@@ -46,9 +46,11 @@
 		}
 		buffer.close();
 		String msg = res.toString();
-		if ("forbidden".equals(msg)) {
-			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
-		}
+		if ("expired".equals(msg)) {
+            response.sendRedirect("../IDServices/Logout?action=expire&id="+id);
+        } else if ("forbidden".equals(msg)) {
+            response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
+        }
 	}
 %>
 
@@ -183,7 +185,6 @@
                 <br>
                 <br>
                 <div class="row text-center">
-					<input type="hidden" name="action" value="selectLocation">
 					<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
                     <input type="submit" class="btn green" style="font-size: 2em; width:auto" value="Next" id="loc_button"/>
                 </div>

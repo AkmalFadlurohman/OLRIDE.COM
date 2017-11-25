@@ -2,7 +2,7 @@
 <%@ page import="java.util.*,java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*,com.olride.OjolServices.LocationManagerInterface" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.HttpURLConnection,java.net.URL"%>
 <%
-	/*if (request.getParameter("id") == null) {
+	if (request.getParameter("id") == null) {
         request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
         request.getRequestDispatcher("../login/login.jsp").forward(request,response);
     }
@@ -46,10 +46,13 @@
         }
         buffer.close();
         String msg = res.toString();
-        if ("forbidden".equals(msg)) {
+        String msg = res.toString();
+        if ("expired".equals(msg)) {
+            response.sendRedirect("../IDServices/Logout?action=expire&id="+id);
+        } else if ("forbidden".equals(msg)) {
             response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
         }
-    }*/
+    }
 %>
 <html>
 <head>
@@ -100,7 +103,7 @@
         }
     </script>
     <%
-        int id = 1;
+        //int id = 1;
         String address = "http://localhost:8080/Olride/IDServices/IdentityService";
         URL urlAddress = new URL(address);
         HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();

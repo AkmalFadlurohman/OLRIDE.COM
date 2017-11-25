@@ -97,13 +97,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row text-center">
-                <br>
-                <br>
-                <a id="btn-finish" href="../history/driver_history.jsp?id=<%out.println(user.getId());%>" onclick="return confirm('Apakah kamu yakin telah menyelesaikan order?');" class="btn green" style="width:150px; font-size:larger; padding: 10px 25px">FINISH</a>
-                <br>
-                <br>
-            </div>
         </div>
         
 
