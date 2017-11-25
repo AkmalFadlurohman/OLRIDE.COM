@@ -2,7 +2,7 @@
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.HttpURLConnection,java.net.URL"%>
 <%
-	if (request.getParameter("id") == null) {
+	/*if (request.getParameter("id") == null) {
         request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
         request.getRequestDispatcher("../login/login.jsp").forward(request,response);
     }
@@ -49,117 +49,117 @@
         if ("forbidden".equals(msg)) {
             response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
         }
-    }
+    }*/
 %>
 <html>
 <head>
+    <%   
+        int id = 1;
+        String address = "http://localhost:8080/Olride/IDServices/IdentityService";
+        URL urlAddress = new URL(address);
+        HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
+        httpPost.setRequestMethod("POST");
+        httpPost.setDoOutput(true);
+        DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
+        writer.writeBytes("action=getUser&id="+id);
+        writer.flush();
+        writer.close();
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+        String inputLine;
+        StringBuilder res = new StringBuilder(); 
+        int respCode = httpPost.getResponseCode();
+        String respMsg = httpPost.getResponseMessage();
+        while ((inputLine = buffer.readLine()) != null) {
+            res.append(inputLine);
+        }
+        buffer.close();
+        String uJson = res.toString();
+        User user = new Gson().fromJson(uJson,User.class);
+        Driver driver = new Driver();
+        String dJson = null;
+        if ("driver".equals(user.getStatus())) {
+            httpPost = (HttpURLConnection) urlAddress.openConnection();
+            httpPost.setRequestMethod("POST");
+            httpPost.setDoOutput(true);
+            writer = new DataOutputStream(httpPost.getOutputStream());
+            writer.writeBytes("action=getDriver&id="+user.getId());
+            writer.flush();
+            writer.close();
+            buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+            res = new StringBuilder();
+            while ((inputLine = buffer.readLine()) != null) {
+                res.append(inputLine);
+            }
+            dJson = res.toString();
+            driver = new Gson().fromJson(dJson,Driver.class);
+        }
+    %>
     <title>Edit Profile</title>
-    <link rel="stylesheet" type="text/css" href="../css/default_style.css">
-    <link rel="stylesheet" type="text/css" href="../css/profile.css">
+    <link rel="stylesheet" type="text/css" href="../css/new_style.css">
     <link rel="stylesheet" type="text/css" href="../css/header.css">
     <link rel="stylesheet" type="text/css" href="../css/switch.css">
 </head>
 <body>
-    <div class="frame">
-        <div class="header">
-            <%  
-				String address = "http://localhost:8080/Olride/IDServices/IdentityService";
-				URL urlAddress = new URL(address);
-				HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
-				httpPost.setRequestMethod("POST");
-				httpPost.setDoOutput(true);
-				DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-				writer.writeBytes("action=getUser&id="+id);
-				writer.flush();
-				writer.close();
-				BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-				String inputLine;
-				StringBuilder res = new StringBuilder(); 
-				int respCode = httpPost.getResponseCode();
-				String respMsg = httpPost.getResponseMessage();
-				while ((inputLine = buffer.readLine()) != null) {
-					res.append(inputLine);
-				}
-				buffer.close();
-				String uJson = res.toString();
-				User user = new Gson().fromJson(uJson,User.class);
-				Driver driver = new Driver();
-				String dJson = null;
-				if ("driver".equals(user.getStatus())) {
-					httpPost = (HttpURLConnection) urlAddress.openConnection();
-					httpPost.setRequestMethod("POST");
-					httpPost.setDoOutput(true);
-					writer = new DataOutputStream(httpPost.getOutputStream());
-					writer.writeBytes("action=getDriver&id="+user.getId());
-					writer.flush();
-					writer.close();
-					buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-					res = new StringBuilder();
-					while ((inputLine = buffer.readLine()) != null) {
-						res.append(inputLine);
-					}
-					dJson = res.toString();
-					driver = new Gson().fromJson(dJson,Driver.class);
-				}
-			%>
-			<%@include file="../template/header.jsp"%>
-        </div>
-        <div class="menu_container">
-            <%@include file="../template/menu.jsp"%>
-            <script>
-                document.getElementById("profile_link").setAttribute("class", "menu menu_active");
-            </script>
-        </div>
-        <div class="edit_profile_container">
-            <div class="subheader">
-                <div class="title"><h1>Edit Profile</h1></div>
+    <div class="container">
+		<%@include file="../template/new_header.jsp"%>
+        <script>
+            var menu = document.getElementById("profile_link");
+            menu.setAttribute("class", menu.getAttribute("class")+" active");
+        </script>
+        <div class="row">
+            <div class="col-6 text-left">
+                <h2>EDIT PROFILE</h2>
             </div>
-            <form name="edit_identity" method="POST" action="../IDServices/IdentityService" enctype="multipart/form-data">
-                <div class="change_profilepict">
-                    <div class="current_pict_frame">
-                        <img id="current_profile_pict" src="../IDServices/ImageRetriever?id=<% out.println(user.getId()); %>" onerror="this.src='../img/default_profile.jpeg'">
-                    </div>
-                    <div class="pict_name_field">
-                        <input id="file_name" type="text" readonly="readonly">
-                    </div>
-                    <div class="pict_picker_frame">
-                        <input type="file" name="pictFile" class="upload_file" onchange="showFileName(this);">
-                    </div>
-                </div>
-                <div class="current_profile">
-                    <div class="form_name">
-                        <div style="height: 30px;">
-                            Your Name
-                        </div>
-                        <div style="height: 30px;">
-                            Phone
-                        </div>
-                        <div style="height: 30px;">
-                            Driver Status
-                        </div>
-                    </div>
-                    <div class="form_field">
-                        <div style="height: 30px;">
-                            <input id="current_name" name="newName" type="text">
-                        </div>
-                        <div style="height: 30px;">
-                            <input id="current_phone" name="newPhone" type="text">
-                        </div>
-                        <div style="height: 30px;">
-                            <label class="switch" style="float: right;">
-                                <input type="checkbox" name="newStatus" id="current_stat">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="edit_profile_nav">
-                		<a href='profile.jsp?id=<%out.println(user.getId());%>'><div class='button red back' style='float: left; margin-left: 20px;'>BACK</div></a>
-                    <input  name="id" type="hidden" value=<%out.println(user.getId());%>>
-                    <input type="submit" value="SAVE" style="float: right;" class="button green save">
-                </div>
-            </form>
         </div>
+        <form name="edit_identity" method="POST" action="../IDServices/IdentityService" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-2 text-left">
+                    <img class="img-circle" src="../IDServices/ImageRetriever?id=<% out.println(user.getId()); %>" onerror="this.src='../img/default_profile.jpeg'">
+                </div>
+                <div class="col-4" style="margin-top: 10%">
+                    <input id="file_name" type="text" readonly="readonly">
+                    <input type="file" name="pictFile" class="upload_file" onchange="showFileName(this);">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2 text-left" style="line-height: 35px,margin-top:5px;">
+                    Your Name
+                </div>
+                <div class="col-4 line-height-medium" style="margin-top:5px;">
+                    <input id="current_name" name="newName" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2 text-left" style="line-height: 35px">
+                    Phone
+                </div>
+                <div class="col-4 line-height-medium" style="margin-top:10px;">
+                    <input id="current_phone" name="newPhone" type="text">
+                </div>
+            </div>
+            <div class="row" style="margin-top: 5px" >
+                <div class="col-2 text-left" style="line-height: 35px">
+                    Driver Status
+                </div>
+                <div class="col-4 line-height-medium" style="margin-top:5px;">
+                    <label class="switch">
+                        <input type="checkbox" name="newStatus" id="current_stat">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-3 text-left">
+                    <a class="btn red" href='profile.jsp?id=<%out.println(user.getId());%>'>BACK</a>
+                </div>
+                <div class="col-3 text-right">
+                    <input  name="id" type="hidden" value=<%out.println(user.getId());%>>
+                    <input class="btn green" type="submit" value="SAVE">
+                </div>
+            </div>      
+        </form>
     </div>
     <%
         if (user.getStatus().equals("driver")) {

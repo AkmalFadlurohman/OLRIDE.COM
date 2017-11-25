@@ -2,7 +2,7 @@
 <%@ page import="java.util.*,java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*,com.olride.OjolServices.LocationManagerInterface" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.HttpURLConnection,java.net.URL"%>
 <%
-	if (request.getParameter("id") == null) {
+	/*if (request.getParameter("id") == null) {
         request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
         request.getRequestDispatcher("../login/login.jsp").forward(request,response);
     }
@@ -49,16 +49,13 @@
         if ("forbidden".equals(msg)) {
             response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
         }
-    }
+    }*/
 %>
 <html>
 <head>
-<title>Edit Location</title>
-    <link rel="stylesheet" type="text/css" href="../css/default_style.css">
+    <title>Edit Location</title>
+    <link rel="stylesheet" type="text/css" href="../css/new_style.css">
     <link rel="stylesheet" type="text/css" href="../css/location.css">
-    <link rel="stylesheet" type="text/css" href="../css/header.css">
-</head>
-<body>
     <script>
         function showEdit(editID,saveID,locID,dummylocID,currentlocID,formID,deleteID,cancelID) {
             showSave(editID,saveID);
@@ -102,67 +99,65 @@
             }
         }
     </script>
-    <div class="frame">
-        <div class="header">
-			<%
-				String address = "http://localhost:8080/Olride/IDServices/IdentityService";
-				URL urlAddress = new URL(address);
-				HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
-				httpPost.setRequestMethod("POST");
-				httpPost.setDoOutput(true);
-				DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
-				writer.writeBytes("action=getUser&id="+id);
-				writer.flush();
-				writer.close();
-				BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-				String inputLine;
-				StringBuilder res = new StringBuilder(); 
-				int respCode = httpPost.getResponseCode();
-				String respMsg = httpPost.getResponseMessage();
-				while ((inputLine = buffer.readLine()) != null) {
-					res.append(inputLine);
-				}
-				buffer.close();
-				String uJson = res.toString();
-				User user = new Gson().fromJson(uJson,User.class);
-				Driver driver = new Driver();
-				String dJson = null;
-				if ("driver".equals(user.getStatus())) {
-					httpPost = (HttpURLConnection) urlAddress.openConnection();
-					httpPost.setRequestMethod("POST");
-					httpPost.setDoOutput(true);
-					writer = new DataOutputStream(httpPost.getOutputStream());
-					writer.writeBytes("action=getDriver&id="+user.getId());
-					writer.flush();
-					writer.close();
-					buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
-					res = new StringBuilder();
-					while ((inputLine = buffer.readLine()) != null) {
-						res.append(inputLine);
-					}
-					dJson = res.toString();
-					driver = new Gson().fromJson(dJson,Driver.class);
-				}
-				URL url = new URL("	http://localhost:8080/Olride/OjolServices/LocationManager?wsdl");
-				
-				QName qname = new QName("http://OjolServices.olride.com/", "LocationManagerService");
-		
-				Service service = Service.create(url, qname);
-				LocationManagerInterface LM = service.getPort(LocationManagerInterface.class);
-			%>
-			<%@include file="../template/header.jsp"%>
-        </div>
-    <div class="menu_container">
-        <%@include file="../template/menu.jsp"%>
+    <%
+        int id = 1;
+        String address = "http://localhost:8080/Olride/IDServices/IdentityService";
+        URL urlAddress = new URL(address);
+        HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
+        httpPost.setRequestMethod("POST");
+        httpPost.setDoOutput(true);
+        DataOutputStream writer = new DataOutputStream(httpPost.getOutputStream());
+        writer.writeBytes("action=getUser&id="+id);
+        writer.flush();
+        writer.close();
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+        String inputLine;
+        StringBuilder res = new StringBuilder(); 
+        int respCode = httpPost.getResponseCode();
+        String respMsg = httpPost.getResponseMessage();
+        while ((inputLine = buffer.readLine()) != null) {
+            res.append(inputLine);
+        }
+        buffer.close();
+        String uJson = res.toString();
+        User user = new Gson().fromJson(uJson,User.class);
+        Driver driver = new Driver();
+        String dJson = null;
+        if ("driver".equals(user.getStatus())) {
+            httpPost = (HttpURLConnection) urlAddress.openConnection();
+            httpPost.setRequestMethod("POST");
+            httpPost.setDoOutput(true);
+            writer = new DataOutputStream(httpPost.getOutputStream());
+            writer.writeBytes("action=getDriver&id="+user.getId());
+            writer.flush();
+            writer.close();
+            buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+            res = new StringBuilder();
+            while ((inputLine = buffer.readLine()) != null) {
+                res.append(inputLine);
+            }
+            dJson = res.toString();
+            driver = new Gson().fromJson(dJson,Driver.class);
+        }
+        URL url = new URL(" http://localhost:8080/Olride/OjolServices/LocationManager?wsdl");
+        
+        QName qname = new QName("http://OjolServices.olride.com/", "LocationManagerService");
+
+        Service service = Service.create(url, qname);
+        LocationManagerInterface LM = service.getPort(LocationManagerInterface.class);
+    %>
+</head>
+<body>
+    <div class="container">
+        <%@include file="../template/new_header.jsp"%>
         <script>
-	        document.getElementById("profile_link").setAttribute("class", "menu menu_active");
-	   </script>
-    </div>
-    <div class="editloc_container">
-        <div class="subheader">
-            <div class="title"><h1>Edit Preferred Location</h1></div>
+            var menu = document.getElementById("profile_link");
+            menu.setAttribute("class", menu.getAttribute("class")+" active");
+        </script>
+        <div class="row">
+            <div class="col-5"><h1>Edit Preferred Location</h1></div>
         </div>
-        <div class="display_loc_frame">
+        <div class="row">
             <table>
                 <tr>
                     <th>No</th>
@@ -170,22 +165,22 @@
                     <th>Actions</th>
                 </tr>
                 <%
-                		if (dJson != null) {
-						int size = LM.retrieveLocation(driver.getId()).length;
-						String[] locations = new String[size];
-						for (int i=0;i<size;i++) {
-							locations[i] = LM.retrieveLocation(driver.getId())[i];
-						}
-						for (int i=0;i<size;i++) {
-							out.println("<tr>");
-                            	out.println("<td>"+(i+1)+"</td>");
-                            	out.println("<td>");
+            		if (dJson != null) {
+					int size = LM.retrieveLocation(driver.getId()).length;
+					String[] locations = new String[size];
+					for (int i=0;i<size;i++) {
+						locations[i] = LM.retrieveLocation(driver.getId())[i];
+					}
+					for (int i=0;i<size;i++) {
+						out.println("<tr>");
+                        	out.println("<td>"+(i+1)+"</td>");
+                        	out.println("<td>");
                                 out.println("<div id='prefloc"+(i+1)+"'>"+locations[i]+"</div>");
                                 out.println("<div id='form_prefloc"+(i+1)+"' style='display: none'>");
                                     out.println("<input type='text' style=' height: 100%, width: 100%;' id='dummy_prefloc"+(i+1)+"' onkeyup=\"copyDummytoNewLoc('dummy_prefloc"+(i+1)+"','new_prefloc"+(i+1)+"');\">");
                                 out.println("</div>");
-                            	out.println("</td>");
-                            	out.println("<td>");
+                        	out.println("</td>");
+                        	out.println("<td>");
                                 out.println("<div class='edit_operation'>");
                                     out.println("<div class='edit_button' id='edit_prefloc"+(i+1)+"' onClick=\"showEdit('edit_prefloc"+(i+1)+"','save_prefloc"+(i+1)+"','prefloc"+(i+1)+"','dummy_prefloc"+(i+1)+"','current_prefloc"+(i+1)+"','form_prefloc"+(i+1)+"','delete_prefloc"+(i+1)+"','cancel_edit"+(i+1)+"');\">✎</div>");
                                     out.println("<div id='save_prefloc"+(i+1)+"' style='display: none'>");
@@ -207,24 +202,27 @@
                                     out.println("</div>");
                                     out.println("<div class='cancel_button' id='cancel_edit"+(i+1)+"' style='display: none;' onClick=\"hideEdit('edit_prefloc"+(i+1)+"','save_prefloc"+(i+1)+"','prefloc"+(i+1)+"','form_prefloc"+(i+1)+"','delete_prefloc"+(i+1)+"','cancel_edit"+(i+1)+"');\">Cancel</div>");
                                 out.println("</div>");
-                     	   	out.println("</td>");
-                        		out.println("</tr>");
-						}
+                 	   	  out.println("</td>");
+                    	out.println("</tr>");
 					}
+				}
                 %>
             </table>
-
         </div>
-        <div class="add_loc_frame">
-            <h2>Add New Location</h2>
+        <div class="row">
+            <div class="col-6"><h2>Add New Location</h2></div>
             <form name="add_location" action="../IDServices/IdentityService" method="POST">
                 <input type="text" id="add_newloc" name="new_location">
                 <input type="hidden" name="action" value="addLocation">
                 <input type="hidden" name="id" value=<%out.println(user.getId());%>>
-                <input type="submit" value="ADD" class="button green add">
+                <input type="submit" value="ADD" class="btn green">
             </form>
         </div>
-        <a href='profile.jsp?id=<%out.println(user.getId());%>'><div class='button red back'>BACK</div></a>
+        <div class="row">
+            <div class="col-1">
+                <a class="btn red" href="profile.jsp?id=<%out.println(user.getId());%>">BACK</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

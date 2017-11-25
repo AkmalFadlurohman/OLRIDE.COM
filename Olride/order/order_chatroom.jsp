@@ -160,12 +160,12 @@
         </div>
         <br>
         <br> 
-        <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController">
+        <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController" data-ng-init="initChatroom(myId,otherId)">
             <div class="col-6 chatarea" id="chatarea">
                 <ul class="chatlist">
-					<li ng-repeat="message in messages" ng-class="message.sender == <%out.println(id);%> ? 'right' : 'left'">
+					<li ng-repeat="message in chatRoom.messages" ng-class="message.sender == <%out.println(id);%> ? 'right' : 'left'">
                         <div>
-                            <p>{{message.text}}</p>
+                            <p>{{message.content}}</p>
                         </div>
                     </li>
                 </ul>
@@ -173,10 +173,10 @@
             <div class="col-6" style="outline: 1px solid black; height:49px">
                 <div class="row">
                     <div class="col-5">
-                        <textarea id="chat-textarea" rows="3" cols="70" placeholder="Ketik pesanmu disini ..." style="resize:none;outline: 1px solid #ffffff00;box-sizing:border-box"></textarea>
+                        <textarea id="chat-textarea" rows="3" cols="70" placeholder="Type your message here ..." style="resize:none;outline: 1px solid #ffffff00;box-sizing:border-box"></textarea>
                     </div>
                     <div class="col-1" style="padding-top:10px;box-sizing: border-box;">
-                        <input id="btn-send-message" class="btn green" type="submit" value="Kirim" style="width:110px">
+                        <input id="btn-send-message" class="btn green" type="submit" value="Send" style="width:110px">
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
         <br>
 
 		<div class="row text-center">
-			<a id="btn-cancel" href="../order/order.jsp?id=<%out.println(user.getId());%>" onclick="return confirm('Apakah kamu yakin ingin membatalkan pesanan?');" class="btn red" style="width:150px; color:white; font-size:larger; padding: 10px 25px">CLOSE</a>
+			<a id="btn-cancel" href="../order/order.jsp?id=<%out.println(user.getId());%>" onclick="return confirm('Are you sure you want to cancel tis order?');" class="btn red" style="width:150px; color:white; font-size:larger; padding: 10px 25px">CLOSE</a>
 		</div>
 
 		<br>
@@ -205,55 +205,52 @@
 		// Preparing Angular ---------------------------------------------------------
 	
 		var app =  angular.module('chatApp', ['firebase']);
-		app.controller('chatController', function($scope,$firebaseObject){
-			$scope.myId
-			$scope.messages = $scope.chatData.messages;
+		app.controller('chatController', function($scope,$firebaseObject,$http){
+			$scope.myId = <%out.println(id);%>;
+			$scope.otherId = <%out.println(driverId);%>;
+			//$scope.messages = $scope.chatData.messages;
 			scrollDown();
-			$scope.chatData = {
-				id: 1,
-				participants: [1,3],
-				messages: []
-			};
-			$scope.fetch = function (participant1,participant2) {
+			$scope.message = null;
+			$scope.chatRoom = null;
+			//$scope.chatData = null;
+
+			$scope.initChatroom = function (participant1,participant2) {
 				var data = {
 					participant1: participant1,
 					participant2: participant2
 				};
 				$http.post('http://localhost:8123/chatroom/fetch', JSON.stringify(data)).then(
 				function (response) {
-					if (response.data) {
-						var chatRoom = JSON.parse(response.data);
-						$scope.chatData.id = chatRoom._id;
-						$scope.chatData.participants = chatroom.participants;
-						$scope.
+					if (response.data === "Not available") {
+						createChatroom(participant1,participant2);
+						$scope.message = "Chatroom does not exist"
+					} else {
+						$scope.message = "Chatroom already exist"
+						$scope.chatRoom = response.data;
 					}
-				}, function (response) {
-					$scope.msg = "Service not Exists";
 				});
 			};
-			$scope.create = function (participant1,participant2) {
+			var createChatroom = function (participant1,participant2) {
 				var data = {
 					participant1: participant1,
 					participant2: participant2
 				};
 				$http.post('http://localhost:8123/chatroom/create', JSON.stringify(data)).then(
 				function (response) {
-					if (response.data) $scope.msg = response.data;
-				}, function (response) {
-					$scope.msg = "Service not Exists";
+					if (response.data) {
+						$scope.chatRoom = response.data;
+					}
 				});
 			};
 			$scope.push = function (chatId,senderId,content) {
 				var data = {
 					chatId: chatId,
-					senderId: senderId,
-					content: content
+					sender: senderId,
+					text: content
 				};
 				$http.post('http://localhost:8123/chatroom/push', JSON.stringify(data)).then(
 				function (response) {
 					if (response.data) $scope.msg = response.data;
-				}, function (response) {
-					$scope.msg = "Service not Exists";
 				});
 			};
 		});
@@ -326,9 +323,9 @@
 						var value = responseData.someKey;
 						var scope = angular.element($("#driver-order-chat")).scope();
 						scope.$apply(function() {
-							scope.messages.push({
+							scope.chatRoom.messages.push({
 								sender: myId,
-								text: msg
+								content: msg
 							});
 							$('#chat-textarea').val('');
 							scrollDown();

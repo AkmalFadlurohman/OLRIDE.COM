@@ -189,13 +189,17 @@ body {
     outline: 3px solid black;
 }
 
-.profil > p {
+.profile > p {
     line-height: 50%;
 }
 
 .location-list {
     line-height: 1.9em;
     list-style-image: url('/Olride/img/ic_triangle.png');
+}
+
+.location-list ul:first-child {
+    padding-left: 3%;
 }
 
 .edit:after {

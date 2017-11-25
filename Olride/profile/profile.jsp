@@ -2,7 +2,7 @@
 <%@ page import="java.util.*,java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.OjolServices.LocationManagerInterface" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.HttpURLConnection,java.net.URL"%>
 <%
-	if (request.getParameter("id") == null) {
+	/*if (request.getParameter("id") == null) {
 		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
 		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 	}
@@ -49,12 +49,13 @@
 		if ("forbidden".equals(msg)) {
 			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
-	}
+	}*/
 %>
 <html>
 <head>
 
 	<%  
+		int id = 1;
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
 		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
@@ -112,7 +113,7 @@
 			<div class="col-1 text-right"><a class="edit" href="edit_profile.jsp?id=<%out.println(user.getId());%>"></a></div>
 		</div> 
 		
-		<div class="text-center profil">
+		<div class="text-center profile">
             <img class="img-circle" src="../IDServices/ImageRetriever?id=<% out.print(user.getId()); %>" onerror="this.src='../img/default_profile.jpeg'"><br>
             <h2>@<%out.print(user.getUsername()); %></h2>
             <p><%out.print(user.getFullname()); %></p>
@@ -138,29 +139,36 @@
 			<div class="col-5"><h2>PREFERED LOCATIONS</h2></div>
             <div class="col-1 text-right"><a class="edit" href="edit_location.jsp?id=<%out.println(user.getId());%>"></a></div>
         </div>
-        <div class="row">
-			<ul class="location-list">
-				<%	
-					URL url = new URL("	http://localhost:8080/Olride/OjolServices/LocationManager?wsdl");
-				
-					QName qname = new QName("http://OjolServices.olride.com/", "LocationManagerService");
+        <div class="row location-list">
+			<%	
+				URL url = new URL("	http://localhost:8080/Olride/OjolServices/LocationManager?wsdl");
 			
-					Service service = Service.create(url, qname);
-					LocationManagerInterface LM = service.getPort(LocationManagerInterface.class);
-					if ("driver".equals(user.getStatus())) {
-						int size = LM.retrieveLocation(driver.getId()).length;
-						int bound = size;
-						if (bound >= 3) {
-							bound = 3;
-						}
-						StringBuilder builder = new StringBuilder();
-						for (int i=0;i<bound;i++) {
+				QName qname = new QName("http://OjolServices.olride.com/", "LocationManagerService");
+		
+				Service service = Service.create(url, qname);
+				LocationManagerInterface LM = service.getPort(LocationManagerInterface.class);
+				if ("driver".equals(user.getStatus())) {
+					int size = LM.retrieveLocation(driver.getId()).length;
+					int bound = size;
+					if (bound >= 3) {
+						bound = 3;
+					}
+					StringBuilder builder = new StringBuilder();
+					builder.append("<ul>");
+					for (int i=0;i<bound;i++) {
+						if (i != bound-1) {
+							builder.append("<li style=\"margin-left: 0px\"><b>"+LM.retrieveLocation(driver.getId())[i]+"</b></li><ul>");
+						} else {	
 							builder.append("<li style=\"margin-left: 0px\"><b>"+LM.retrieveLocation(driver.getId())[i]+"</b></li>");
 						}
-						out.println(builder.toString());
-					}	
-				%>
-			</ul>
+					}
+					for (int i=0;i<bound;i++) {
+						builder.append("</ul>");
+					}
+
+					out.println(builder.toString());
+				}	
+			%>
 		</div>
 
 		<% } %>

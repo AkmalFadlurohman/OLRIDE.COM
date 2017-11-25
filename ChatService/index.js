@@ -4,7 +4,6 @@ const express        = require('express');
 const requestLib     = require('request');
 const MongoClient    = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/olride_ChatServices";
-const express        = require('express');
 const bodyParser     = require('body-parser');
 const port           = 8123;
 const app            = express();
@@ -24,11 +23,13 @@ app.use(function(req, res, next) {
 // Membuat chatroom baru dengan anggota participant1 dan participant2
 function createChatroom(participant1,participant2) {
     var chatroom = {"participants": [participant1,participant2], "messages": []};
-    db.collection("chatrooms").insertOne(chatroom, function(err, res) {
-        if (err) throw err;
-        console.log("Created new chatroom with participants ["participant1+","+participant2"]");
-        db.close();
-    });
+    MongoClient.connect(url, function(err, db) {
+        db.collection("chatrooms").insertOne(chatroom, function(err, res) {
+            if (err) throw err;
+            console.log("Created new chatroom with participants ["+participant1+","+participant2+"]");
+            db.close();
+        });
+    })   
 }
 // Menyimpan chat baru yang dikirim pengguna dengan id senderId dan isi pesan berupa content
 function pushToChatroom(chatId,senderId,content) {
@@ -73,19 +74,13 @@ app.get('/driver/online', function(request, response) {
         ]
     );
 });
+
 // Pemanggilan prosedur createChatroom melalui ajax request
 app.post('/chatroom/create', function(request, response) {
     var participant1 = parseInt(request.body.participant1,10);
     var participant2 = parseInt(request.body.participant2,10);
     createChatroom(participant1,participant2);
-    response.send("sending tp " + target);
-});
-// Mendapatkan seluruh data history chat dengan partisipan 1 dan 2
-app.post('/chatroom/fetch', function(request, response) {
-    var participant1 = parseInt(request.body.participant1,10);
-    var participant2 = parseInt(request.body.participant2,10);
     var query = { participants: [participant1,participant2] };
-    console.log("Fetch chatroom with participants: ["+participant1+","+participant2+"]");
     MongoClient.connect(url, function(err, db) {
         db.collection("chatrooms").findOne(query,function(err, res) {
             if (err) console.error(err);
@@ -95,14 +90,37 @@ app.post('/chatroom/fetch', function(request, response) {
         })
     });
 });
+
+// Mendapatkan seluruh data history chat dengan partisipan 1 dan 2
+app.post('/chatroom/fetch', function(request, response) {
+    var participant1 = parseInt(request.body.participant1,10);
+    var participant2 = parseInt(request.body.participant2,10);
+    var query = { participants: [participant1,participant2] };
+    console.log("Fetch chatroom with participants: ["+participant1+","+participant2+"]");
+    MongoClient.connect(url, function(err, db) {
+        db.collection("chatrooms").findOne(query,function(err, res) {
+            if (err) console.error(err);
+            var reply;
+            if (res) {
+                reply = JSON.stringify(res);
+                
+            } else {
+                reply = "Not available";
+            }
+            console.log(reply);
+            response.send(reply);
+            db.close();
+        })
+    });
+});
+
 // Pemanggilan prosedur pushToChatroom melalui ajax request
 app.post('/chatroom/push', function(request, response) {
     var chatId = parseInt(request.body.chatId,10);
     var senderId = parseInt(request.body.senderId,10);
-    var content = request.body.content;
+    var content = request.body.text;
     pushToChatroom(chatId,senderId,content);
 });
-
 
 // Menerima request untuk mengirimkan pesan ke :target, awalnya perlu dilakukan
 // pencarian token_fcm milik akun :target, kemudian buat request ke fcm
