@@ -274,7 +274,6 @@
 									}
 									otherDJson = res.toString();
 									drivers = new Gson().fromJson(otherDJson,Driver.class);
-
 									if ("active".equals(drivers.getStatus())) {
 										out.println(
 											"<div class='row'>" +
@@ -284,7 +283,6 @@
 											"	<span class='btn green' style='float: right; margin: 10px' onclick='chooseDriver("+drivers.getId()+")'>I CHOOSE YOU!</span>" +
 											"</div>");
 									}
-
 								} else {
 									size -= 1;
 								}

@@ -100,11 +100,6 @@
         }
     %>
 
-    <%
-        if (user.getStatus().equals("driver")) {
-            out.println("<script>document.getElementById('current_stat').checked = true;</script>");
-        }
-    %>
 
 </head>
 <body>
@@ -187,6 +182,11 @@
                 </div>
             </form>
         </div>
+    <%
+        if (user.getStatus().equals("driver")) {
+            out.println("<script>document.getElementById('current_stat').checked = true;</script>");
+        }
+    %>
     <script>
 
         function showFileName(inputFile) {
