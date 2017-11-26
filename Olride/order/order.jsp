@@ -54,9 +54,6 @@
 	%>
 	<title>Finding Order</title>
 	<link rel="stylesheet" type="text/css" href="../css/new_style.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-	<link rel="manifest" href="/Olride/script/manifest.json">
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 </head>
 <body>
 	<div class="container">
@@ -82,61 +79,5 @@
             </div>
         </div>
 	</div>
-	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script>
-	
-	<script type="text/javascript">
-		var myId = <%out.println(id);%>;
-		// Preparing FCM -----------------------------------------------------------------
-		var fcmToken = null;
-		var config = {
-			apiKey: "AIzaSyB0KWompT2YoRR99caQcanuxSr-ag5Z6-k",
-			authDomain: "olride-69182.firebaseapp.com",
-			databaseURL: "https://olride-69182.firebaseio.com",
-			projectId: "olride-69182",
-			storageBucket: "olride-69182.appspot.com",
-			messagingSenderId: "679619512375"
-		};
-		firebase.initializeApp(config);
-		
-		const messaging = firebase.messaging();
-		navigator.serviceWorker.register("/Olride/script/service-worker.js")
-			.then((registration) => {
-  			messaging.useServiceWorker(registration);
-			messaging.requestPermission()
-			.then(function() {
-				console.log('Messaging permission granted.');
-				return messaging.getToken();
-			})
-			.then(function(currentToken) {
-				console.log(currentToken);
-				fcmToken = currentToken;
-				registerToken(myId,fcmToken);
-			})
-			.catch(function(err) {
-				console.log('Error occured.', err);
-			});
-
-		});
-		$('#btn-find-order').click(function() {
-			
-		});
-		function registerToken(userId,fcmToken) {
-			$.ajax({
-				type: 'POST',
-				url: 'http://localhost:8123/token/register',
-				data: {
-					user: userId,
-					token: fcmToken
-				},
-				success: function(responseData, textStatus, jqXHR) {
-					var value = responseData.someKey;
-				},
-				error: function (responseData, textStatus, errorThrown) {
-					alert('POST failed.');
-				},
-			});
-		}
-	</script>
 </body>
 </html>
