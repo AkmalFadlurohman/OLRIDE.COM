@@ -46,7 +46,6 @@
         }
         buffer.close();
         String msg = res.toString();
-        String msg = res.toString();
         if ("expired".equals(msg)) {
             response.sendRedirect("../IDServices/Logout?action=expire&id="+id);
         } else if ("forbidden".equals(msg)) {
@@ -152,78 +151,113 @@
 </head>
 <body>
     <div class="container">
-        <%@include file="../template/new_header.jsp"%>
-        <script>
-            var menu = document.getElementById("profile_link");
-            menu.setAttribute("class", menu.getAttribute("class")+" active");
-        </script>
         <div class="row">
-            <div class="col-5"><h1>Edit Preferred Location</h1></div>
+            <div class="col-3"><span class="logo"></span></div>
+            <div class="col-3 text-right">
+                <p>
+                    Hi, <b><% out.println(user.getUsername()); %></b> !<br>
+                    <a href="../IDServices/Logout?id=<%out.println(user.getId());%>">Logout</a>
+                </p>
+            </div>
         </div>
         <div class="row">
-            <table>
-                <tr>
-                    <th>No</th>
-                    <th>Locations</th>
-                    <th>Actions</th>
-                </tr>
-                <%
-            		if (dJson != null) {
-					int size = LM.retrieveLocation(driver.getId()).length;
-					String[] locations = new String[size];
-					for (int i=0;i<size;i++) {
-						locations[i] = LM.retrieveLocation(driver.getId())[i];
-					}
-					for (int i=0;i<size;i++) {
-						out.println("<tr>");
-                        	out.println("<td>"+(i+1)+"</td>");
-                        	out.println("<td>");
-                                out.println("<div id='prefloc"+(i+1)+"'>"+locations[i]+"</div>");
-                                out.println("<div id='form_prefloc"+(i+1)+"' style='display: none'>");
-                                    out.println("<input type='text' style=' height: 100%, width: 100%;' id='dummy_prefloc"+(i+1)+"' onkeyup=\"copyDummytoNewLoc('dummy_prefloc"+(i+1)+"','new_prefloc"+(i+1)+"');\">");
-                                out.println("</div>");
-                        	out.println("</td>");
-                        	out.println("<td>");
-                                out.println("<div class='edit_operation'>");
-                                    out.println("<div class='edit_button' id='edit_prefloc"+(i+1)+"' onClick=\"showEdit('edit_prefloc"+(i+1)+"','save_prefloc"+(i+1)+"','prefloc"+(i+1)+"','dummy_prefloc"+(i+1)+"','current_prefloc"+(i+1)+"','form_prefloc"+(i+1)+"','delete_prefloc"+(i+1)+"','cancel_edit"+(i+1)+"');\">✎</div>");
-                                    out.println("<div id='save_prefloc"+(i+1)+"' style='display: none'>");
-                                        out.println("<form name='edit_prefloc_form' method='POST' action='../IDServices/IdentityService' style='display: inline;' onsubmit=\"return validateAddLoc('dummy_prefloc"+(i+1)+"');\">");
-                                            out.println("<input class='save_button' type='submit' value='Save'>");
-                                            out.println("<input type='hidden' name='current_prefloc' id='current_prefloc"+(i+1)+"'>");
-                                            out.println("<input type='hidden' name='new_prefloc' id='new_prefloc"+(i+1)+"'>");
-                                            out.println("<input type='hidden' name='id' value="+user.getId()+">");
-                                            out.println("<input type='hidden' name='action' value='updateLocation'>");
-                                        out.println("</form>");
-                                    out.println("</div>");
-                                    out.println("<div class='delete_container' id='delete_prefloc"+(i+1)+"'>");
-                                    		out.println("<form name='delete_prefloc_form' method='POST' action='../IDServices/IdentityService' style='display: inline;'>");
-                                    			out.println("<input type='hidden' name='id' value="+user.getId()+">");
-                                    			out.println("<input type='hidden' name='delPrefLoc' value='"+locations[i]+"'>");
-                                    			out.println("<input type='hidden' name='action' value='deleteLocation'>");
-                                    			out.println("<input class='delete_button' type='submit' value='✖'>");
-                                    		out.println("</form>");
-                                    out.println("</div>");
-                                    out.println("<div class='cancel_button' id='cancel_edit"+(i+1)+"' style='display: none;' onClick=\"hideEdit('edit_prefloc"+(i+1)+"','save_prefloc"+(i+1)+"','prefloc"+(i+1)+"','form_prefloc"+(i+1)+"','delete_prefloc"+(i+1)+"','cancel_edit"+(i+1)+"');\">Cancel</div>");
-                                out.println("</div>");
-                 	   	  out.println("</td>");
-                    	out.println("</tr>");
-					}
-				}
-                %>
-            </table>
-        </div>
-        <div class="row">
-            <div class="col-6"><h2>Add New Location</h2></div>
-            <form name="add_location" action="../IDServices/IdentityService" method="POST">
-                <input type="text" id="add_newloc" name="new_location">
-                <input type="hidden" name="action" value="addLocation">
-                <input type="hidden" name="id" value=<%out.println(user.getId());%>>
-                <input type="submit" value="ADD" class="btn green">
-            </form>
-        </div>
-        <div class="row">
-            <div class="col-1">
-                <a class="btn red" href="profile.jsp?id=<%out.println(user.getId());%>">BACK</a>
+            <div class="container">
+                <div class="row">
+                    <div class="col-1 text-left"></div>
+                    <div class="col-4 text-left">
+                        <h2>EDIT PREFERED LOCATION</h2>
+                        <span id="driver-id" style="display: none">VGdWZUZ2dlJlUkM5eWpjVDcyQXJoZz09</span>
+                    </div>
+                    <div class="col-1 text-left"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-1 text-left"></div>
+                    <div class="col-4 text-left">
+                        <table width="100%" border="1">
+                            <tr>
+                                <th width="10%">No</th>
+                                <th width="65%">Location</th>
+                                <th width="20%">Actions</th>
+                            </tr>
+
+                            <%
+                                if (dJson != null) {
+                                    int size = LM.retrieveLocation(driver.getId()).length;
+                                    String[] locations = new String[size];
+                                    for (int i=0;i<size;i++) {
+                                        locations[i] = LM.retrieveLocation(driver.getId())[i];
+                                    }
+                                    for (int i=0;i<size;i++) {
+                                        out.println("<tr>");
+                                            out.println("<td>"+(i+1)+"</td>");
+                                            out.println("<td>");
+                                                out.println("<div id='prefloc"+(i+1)+"'>"+locations[i]+"</div>");
+                                                out.println("<div id='form_prefloc"+(i+1)+"' style='display: none'>");
+                                                    out.println("<input type='text' style=' height: 100%, width: 100%;' id='dummy_prefloc"+(i+1)+"' onkeyup=\"copyDummytoNewLoc('dummy_prefloc"+(i+1)+"','new_prefloc"+(i+1)+"');\">");
+                                                out.println("</div>");
+                                            out.println("</td>");
+                                            out.println("<td>");
+                                                out.println("<div class='edit_operation'>");
+                                                    out.println("<div class='edit_button' id='edit_prefloc"+(i+1)+"' onClick=\"showEdit('edit_prefloc"+(i+1)+"','save_prefloc"+(i+1)+"','prefloc"+(i+1)+"','dummy_prefloc"+(i+1)+"','current_prefloc"+(i+1)+"','form_prefloc"+(i+1)+"','delete_prefloc"+(i+1)+"','cancel_edit"+(i+1)+"');\">✎</div>");
+                                                    out.println("<div id='save_prefloc"+(i+1)+"' style='display: none'>");
+                                                        out.println("<form name='edit_prefloc_form' method='POST' action='../IDServices/IdentityService' style='display: inline;' onsubmit=\"return validateAddLoc('dummy_prefloc"+(i+1)+"');\">");
+                                                            out.println("<input class='save_button' type='submit' value='Save'>");
+                                                            out.println("<input type='hidden' name='current_prefloc' id='current_prefloc"+(i+1)+"'>");
+                                                            out.println("<input type='hidden' name='new_prefloc' id='new_prefloc"+(i+1)+"'>");
+                                                            out.println("<input type='hidden' name='id' value="+user.getId()+">");
+                                                            out.println("<input type='hidden' name='action' value='updateLocation'>");
+                                                        out.println("</form>");
+                                                    out.println("</div>");
+                                                    out.println("<div class='delete_container' id='delete_prefloc"+(i+1)+"'>");
+                                                            out.println("<form name='delete_prefloc_form' method='POST' action='../IDServices/IdentityService' style='display: inline;'>");
+                                                                out.println("<input type='hidden' name='id' value="+user.getId()+">");
+                                                                out.println("<input type='hidden' name='delPrefLoc' value='"+locations[i]+"'>");
+                                                                out.println("<input type='hidden' name='action' value='deleteLocation'>");
+                                                                out.println("<input class='delete_button' type='submit' value='✖'>");
+                                                            out.println("</form>");
+                                                    out.println("</div>");
+                                                    out.println("<div class='cancel_button' id='cancel_edit"+(i+1)+"' style='display: none;' onClick=\"hideEdit('edit_prefloc"+(i+1)+"','save_prefloc"+(i+1)+"','prefloc"+(i+1)+"','form_prefloc"+(i+1)+"','delete_prefloc"+(i+1)+"','cancel_edit"+(i+1)+"');\">Cancel</div>");
+                                                out.println("</div>");
+                                        out.println("</td>");
+                                        out.println("</tr>");
+                                    }
+                                }
+                            %>
+
+                        </table>
+                    </div>
+                    <div class="col-1 text-left"></div>
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-4">
+                        <h3>ADD NEW LOCATION:</h3>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-4">
+                        <form name="add_location" action="../IDServices/IdentityService" method="POST">
+                            <input type="text" name="new_location" style="width:76%;height: 30px; font-size: medium">
+                            <input type="hidden" name="action" value="addLocation">
+                            <input type="hidden" name="id" value=<%out.println(user.getId());%>>
+                            <input class="btn green" type="submit" value="ADD" style="width:20%;margin-left: 10px">
+                        </form>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-4">
+                        <a class="btn red" href="profile.jsp?id=<%out.println(user.getId());%>">BACK</a>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
             </div>
         </div>
     </div>
