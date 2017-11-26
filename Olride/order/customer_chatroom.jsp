@@ -2,7 +2,8 @@
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
 <%
-	if (request.getParameter("id") == null) {
+	int id = 3;
+	/*if (request.getParameter("id") == null) {
 		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
 		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 	}
@@ -51,7 +52,7 @@
 		} else if ("forbidden".equals(msg)) {
 			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
-	}
+	}*/
 %>
 <html>
 <head>
@@ -103,10 +104,9 @@
 	%>
 
 	<%
-		int driverId = Integer.parseInt(request.getParameter("selected_driver"));
-		String pickLoc = request.getParameter("pickLoc");
-		String destLoc = request.getParameter("destLoc");
-		int selectedDriverID = Integer.parseInt(request.getParameter("selected_driver"));
+		int driverId = 1;//Integer.parseInt(request.getParameter("selected_driver"));
+		//String pickLoc = request.getParameter("pickLoc");
+		//String destLoc = request.getParameter("destLoc");
 	%>
 
 </head>
@@ -164,7 +164,7 @@
         </div>
         <br>
         <br> 
-        <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController" data-ng-init="initChatroom(myId,otherId)">
+        <div id="driver-order-chat" class="row" ng-app="chatApp" ng-controller="chatController" data-ng-init="initChatroom(myId,driverId)">
             <div class="col-6 chatarea" id="chatarea">
                 <ul class="chatlist">
 					<li ng-repeat="message in chatRoom.messages" ng-class="message.sender == <%out.println(id);%> ? 'right' : 'left'">
@@ -185,16 +185,15 @@
                 </div>
             </div>
         </div>
-
 		<br>
         <br>
 
 		<div class="row text-center">
 			<form method="post"  action="complete_order.jsp">
 				<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
-				<input type="hidden" name="pickLoc" value=<%out.println(pickLoc);%>>
-				<input type="hidden" name="destLoc" value=<%out.println(destLoc);%>>
-				<input type="hidden" name="selected_driver" value=<%out.println(selectedDriverID);%>>
+				<input type="hidden" name="pickLoc" value=<%//out.println(pickLoc);%>>
+				<input type="hidden" name="destLoc" value=<%//out.println(destLoc);%>>
+				<input type="hidden" name="selected_driver" value=<%//out.println(driverId);%>>
 				<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" onclick="return confirm('Are you sure you want to finish chatting with your driver?');" style="width:150px; color:white; font-size:larger; padding: 10px 25px">
 			</form>
 		</div>
@@ -210,14 +209,14 @@
 
 	<script>
 		var myId = <%out.println(id);%>;
-		var otherId = <%out.println(driverId);%>;
+		var driverId = <%out.println(driverId);%>;
 
 		// Preparing Angular ---------------------------------------------------------
 	
 		var app =  angular.module('chatApp', ['firebase']);
 		app.controller('chatController', function($scope,$firebaseObject,$http){
 			$scope.myId = <%out.println(id);%>;
-			$scope.otherId = <%out.println(driverId);%>;
+			$scope.driverId = <%out.println(driverId);%>;
 			$scope.message = null;
 			$scope.chatRoom = null;
 
@@ -247,17 +246,6 @@
 					}
 				});
 			};
-			$scope.push = function (chatId,senderId,content) {
-				var data = {
-					chatId: chatId,
-					sender: senderId,
-					text: content
-				};
-				$http.post('http://localhost:8123/chatroom/push', JSON.stringify(data)).then(
-				function (response) {
-					if (response.data) $scope.msg = response.data;
-				});
-			};
 		});
 
 		// Preparing FCM -----------------------------------------------------------------
@@ -284,6 +272,7 @@
 			.then(function(currentToken) {
 				console.log(currentToken);
 				fcmToken = currentToken;
+				registerToken(myId,fcmToken);
 			})
 			.catch(function(err) {
 				console.log('Error occured.', err);
@@ -295,7 +284,7 @@
 			var scope = angular.element($("#driver-order-chat")).scope();
     		scope.$apply(function() {
 				scope.messages.push({
-					sender: otherId,
+					sender: driverId,
 					text: payload.notification.body
 				});
 				scrollDown();
@@ -304,13 +293,13 @@
 
 		// Handle user click in Send button
 		$('#btn-send-message').click(function() {
-			sendMessage(1);
+			sendMessage(driverId);
 		});
 
 		// Handle user click enter in chat textarea
 		$("#chat-textarea").keypress(function (e) {
 			if(e.which == 13) {
-				sendMessage(1);
+				sendMessage(driverId);
 			}
     	});
 
@@ -359,7 +348,22 @@
 				alert('Message is empty!');
 			}
 		}
-
+		function registerToken(userId,fcmToken) {
+			$.ajax({
+				type: 'POST',
+				url: 'http://localhost:8123/token/register',
+				data: {
+					user: userId,
+					token: fcmToken
+				},
+				success: function(responseData, textStatus, jqXHR) {
+					var value = responseData.someKey;
+				},
+				error: function (responseData, textStatus, errorThrown) {
+					alert('POST failed.');
+				},
+			});
+		}
 		function scrollDown() {
 			setTimeout(function() {
 				$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);

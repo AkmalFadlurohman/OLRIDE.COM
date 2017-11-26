@@ -8,18 +8,13 @@ var url = "mongodb://localhost:27017/olride_ChatServices";
 const bodyParser     = require('body-parser');
 const port           = 8123;
 const app            = express();
-
+var cors = require('cors')
 
 app.use(bodyParser.json());         // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 })); 
-
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Origin', '*');
-    next();
-});
+app.use(cors());
 
 // Membuat chatroom baru dengan anggota participant1 dan participant2
 function createChatroom(participant1,participant2) {
@@ -32,7 +27,7 @@ function createChatroom(participant1,participant2) {
         });
     })   
 }
-// Menyimpan chat baru yang dikirim pengguna dengan id senderId dan isi pesan berupa content
+// Menyimpan ke basis data history chat dari seorang pemesan dan seorang driver. Misalkan A pernah memesan driver B. Jika suatu saat A akan memesan lagi ke driver B, maka kotak chat menampilkan chat yang dilakukan pada pemesanan sebelumnya.
 function pushToChatroom(chatId,senderId,content) {
     var message = {"sender": senderId,"content":content};
     MongoClient.connect(url, function(err, db) {
@@ -43,17 +38,43 @@ function pushToChatroom(chatId,senderId,content) {
         console.log("Inserted new message :" + JSON.stringify(message,null,1) + " to chatroom with id: "+chatId);
     })
 }
-
 // Menyimpan identitas (token FCM) dari masing-masing pengguna yang sedang online
-// Menerima request dari user A untuk chat ke user B, lalu membuat request ke FCM untuk pengiriman pesan ke token FCM user B.
-// Menyimpan ke basis data history chat dari seorang pemesan dan seorang driver. Misalkan A pernah memesan driver B. Jika suatu saat A akan memesan lagi ke driver B, maka kotak chat menampilkan chat yang dilakukan pada pemesanan sebelumnya.
+function registerToken(userId,fcmToken) {
+    var tokenOwner = {"user": userId,"token":fcmToken};
+    MongoClient.connect(url, function(err, db) {
+        db.collection("tokenOwners").insertOne(tokenOwner, function(err, res) {
+            if (err) throw err;
+            console.log("Registered user "+userId+" with FCM token "+fcmToken);
+            db.close();
+        });
+    })
+}
+
+
 app.get('/', function(request, response) {
     response.send("Olride!");
 });
 
-// Menyimpan token_fcm dan username yang diberikan oleh client
+// Menyimpan token_fcm dan id yang diberikan oleh client
 app.post('/token/register', function(request, response) {
-
+    var userId = parseInt(request.body.user,10);
+    var fcmToken = request.body.token;
+    var query = { user: userId };
+    MongoClient.connect(url, function(err, db) {
+        db.collection("tokenOwners").findOne(query, function(err, res) {
+            var reply;
+            if (err) throw err;
+            if (res) {
+                reply = "User "+ userId+ " with FCM token "  +" already registered";
+                console.log("User "+ userId+ " with FCM token "  +" already registered");
+            } else {
+                reply = "Registered user "+userId+" with FCM token "+fcmToken;
+                registerToken(userId,fcmToken);
+            }
+            response.send(reply);
+            db.close();
+        });
+    })
 });
 
 // Memberikan daftar driver yang sedang mencari pesanan
@@ -103,8 +124,7 @@ app.post('/chatroom/fetch', function(request, response) {
             if (err) console.error(err);
             var reply;
             if (res) {
-                reply = JSON.stringify(res);
-                
+                reply = JSON.stringify(res); 
             } else {
                 reply = "Not available";
             }
@@ -128,9 +148,22 @@ app.post('/chatroom/push', function(request, response) {
 // pencarian token_fcm milik akun :target, kemudian buat request ke fcm
 app.post('/message/send/:target', function(request, response) {
     var target = request.params.target;
-
+    var query = { user: target };
+    var targetToken;
     // Search destination token
-    var targetToken = 'e0l50GH8TEU:APA91bG0VKYBu3OW5F5Lgmd64PzL0iJ0MdzaO4O4Ny33N_lYtUJzpT9MV1my6WwGKiLWrujfFC1T7oTBgzJqqGfEL9VbvLJbqcjaPv2LbqP_ZG9DCyMxGFJ8iWZf85mSO_8tQfO-fxLr';
+    MongoClient.connect(url, function(err, db) {
+        db.collection("tokenOwners").findOne(query, function(err, res) {
+            if (err) throw err;
+            console.log("Finding FCM token for user "+ target);
+            if (res) {
+                targetToken = res.token;
+            } else {
+                console.log("Can not find token for user "+ target);
+            }
+            db.close();
+        });
+    })
+    //targetToken = 'e0l50GH8TEU:APA91bG0VKYBu3OW5F5Lgmd64PzL0iJ0MdzaO4O4Ny33N_lYtUJzpT9MV1my6WwGKiLWrujfFC1T7oTBgzJqqGfEL9VbvLJbqcjaPv2LbqP_ZG9DCyMxGFJ8iWZf85mSO_8tQfO-fxLr';
     console.log('Sending ' + request.body.text + ' to ' + targetToken);
 
     // Send message to FCM
@@ -162,4 +195,17 @@ app.post('/message/send/:target', function(request, response) {
 
 app.listen(port, () => {
     console.log('Olride Chat Service is active on ' + port);
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        db.createCollection("chatrooms", function(err, res) {
+            if (err) throw err;
+            console.log("chatrooms collection created!");
+            
+        });
+        db.createCollection("tokenOwners", function(err, res) {
+            if (err) throw err;
+            console.log("tokenOwners collection created!");
+            db.close();
+        });
+    }) 
 });
