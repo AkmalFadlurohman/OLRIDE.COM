@@ -104,9 +104,9 @@
 	%>
 
 	<%
-		int driverId = 1;//Integer.parseInt(request.getParameter("selected_driver"));
-		//String pickLoc = request.getParameter("pickLoc");
-		//String destLoc = request.getParameter("destLoc");
+		int driverId = Integer.parseInt(request.getParameter("selected_driver"));
+		String pickLoc = request.getParameter("pickLoc");
+		String destLoc = request.getParameter("destLoc");
 	%>
 
 </head>
@@ -190,10 +190,10 @@
 
 		<div class="row text-center">
 			<form method="post"  action="complete_order.jsp">
-				<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
-				<input type="hidden" name="pickLoc" value=<%//out.println(pickLoc);%>>
-				<input type="hidden" name="destLoc" value=<%//out.println(destLoc);%>>
-				<input type="hidden" name="selected_driver" value=<%//out.println(driverId);%>>
+				<input type="hidden" name="id" value=<%out.print(user.getId()); %>>
+				<input type="hidden" name="pickLoc" value=<%out.print(pickLoc);%>>
+				<input type="hidden" name="destLoc" value=<%out.print(destLoc);%>>
+				<input type="hidden" name="selected_driver" value=<%out.print(driverId);%>>
 				<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" onclick="return confirm('Are you sure you want to finish chatting with your driver?');" style="width:150px; color:white; font-size:larger; padding: 10px 25px">
 			</form>
 		</div>
