@@ -55,6 +55,9 @@
 %>
 <html>
 <head>
+    <title>Edit Profile</title>
+    <link rel="stylesheet" type="text/css" href="../css/new_style.css">
+
     <%   
         //int id = 1;
         String address = "http://localhost:8080/Olride/IDServices/IdentityService";
@@ -96,81 +99,96 @@
             driver = new Gson().fromJson(dJson,Driver.class);
         }
     %>
-    <title>Edit Profile</title>
-    <link rel="stylesheet" type="text/css" href="../css/new_style.css">
-    <link rel="stylesheet" type="text/css" href="../css/header.css">
-    <link rel="stylesheet" type="text/css" href="../css/switch.css">
-</head>
-<body>
-    <div class="container">
-		<%@include file="../template/new_header.jsp"%>
-        <script>
-            var menu = document.getElementById("profile_link");
-            menu.setAttribute("class", menu.getAttribute("class")+" active");
-        </script>
-        <div class="row">
-            <div class="col-6 text-left">
-                <h2>EDIT PROFILE</h2>
-            </div>
-        </div>
-        <form name="edit_identity" method="POST" action="../IDServices/IdentityService" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-2 text-left">
-                    <img class="img-circle" src="../IDServices/ImageRetriever?id=<% out.println(user.getId()); %>" onerror="this.src='../img/default_profile.jpeg'">
-                </div>
-                <div class="col-4" style="margin-top: 10%">
-                    <input id="file_name" type="text" readonly="readonly">
-                    <input type="file" name="pictFile" class="upload_file" onchange="showFileName(this);">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-2 text-left" style="line-height: 35px,margin-top:5px;">
-                    Your Name
-                </div>
-                <div class="col-4 line-height-medium" style="margin-top:5px;">
-                    <input id="current_name" name="newName" type="text">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-2 text-left" style="line-height: 35px">
-                    Phone
-                </div>
-                <div class="col-4 line-height-medium" style="margin-top:10px;">
-                    <input id="current_phone" name="newPhone" type="text">
-                </div>
-            </div>
-            <div class="row" style="margin-top: 5px" >
-                <div class="col-2 text-left" style="line-height: 35px">
-                    Driver Status
-                </div>
-                <div class="col-4 line-height-medium" style="margin-top:5px;">
-                    <label class="switch">
-                        <input type="checkbox" name="newStatus" id="current_stat">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </div>
-            <br>
-            <br>
-            <div class="row">
-                <div class="col-3 text-left">
-                    <a class="btn red" href='profile.jsp?id=<%out.println(user.getId());%>'>BACK</a>
-                </div>
-                <div class="col-3 text-right">
-                    <input  name="id" type="hidden" value=<%out.println(user.getId());%>>
-                    <input class="btn green" type="submit" value="SAVE">
-                </div>
-            </div>      
-        </form>
-    </div>
+
     <%
         if (user.getStatus().equals("driver")) {
             out.println("<script>document.getElementById('current_stat').checked = true;</script>");
         }
-        out.println("<script>document.getElementById('current_name').value = '"+user.getFullname()+"';</script>");
-        out.println("<script>document.getElementById('current_phone').value = '"+user.getPhone()+"';</script>");
     %>
+
+</head>
+<body>
+    <div class="container">
+		<div class="row">
+            <div class="col-3"><span class="logo"></span></div>
+            <div class="col-3 text-right">
+                <p class="user-action">
+                    Hi, <b><% out.println(user.getUsername()); %></b> !<br>
+                    <a href="../IDServices/Logout?id=<%out.println(user.getId());%>">Logout</a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <form name="edit_identity" method="POST" action="../IDServices/IdentityService" enctype="multipart/form-data" onsubmit="return validateProfileEdit()">
+                <div class="container" style="width: 65%">
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <h2>EDIT PROFILE INFORMATION</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 text-left">
+                            <img class="img-profile" src="../IDServices/ImageRetriever?id=<% out.print(user.getId()); %>" onerror="this.src='../img/default_profile.jpeg'">
+                        </div>
+                        <div class="col-4">
+                            <h3>Update profile picture</h3>
+                            <form action="#">
+                                <input id="photo" type="file" name="pictFile" accept="image/*" class="input-photo">
+                                <label for="photo">
+                                    <div class="input-photo-result">
+
+                                    </div>
+                                    <div class="input-photo-button">
+                                        Browse...
+                                    </div>
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-2 text-left" style="line-height: 35px">
+                            Your Name
+                        </div>
+                        <div class="col-4 line-height-medium">
+                            <input id="inputName" style="width: 100%; height: 30px;padding-left: 5px;font-size: medium" type="text" name="newName" value="<%out.print(user.getFullname());%>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 text-left" style="line-height: 35px">
+                        Phone
+                        </div>
+                        <div class="col-4 line-height-medium">
+                            <input id="inputPhone" style="width: 100%; height: 30px;padding-left: 5px;font-size: medium" type="text" name="newPhone" value="<%out.print(user.getPhone());%>">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 5px">
+                        <div class="col-2 text-left" style="line-height: 30px">
+                            Driver Status
+                        </div>
+                        <div class="col-4 line-height-medium text-right">
+                            <label class="switch">
+                                <input type="checkbox" name="newStatus" id="current_stat">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-3 text-left">
+                            <a class="btn red" href="profile.jsp?id=<%out.print(user.getId());%>">BACK</a>
+                        </div>
+                        <div class="col-3 text-right">
+                            <input  name="id" type="hidden" value=<%out.println(user.getId());%>>
+                            <input class="btn green" type="submit" value="SAVE">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     <script>
+
         function showFileName(inputFile) {
             var arrTemp = inputFile.value.split('\\');
             document.getElementById("file_name").value = arrTemp[arrTemp.length - 1];
@@ -187,6 +205,39 @@
                 return false;
             }
         }
+
+
+        function validateProfileEdit() {
+            var inputName = document.getElementById('inputName').value;
+            var inputPhone = document.getElementById('inputPhone').value;
+
+            if (inputName.trim() == "" || inputPhone.trim() == "") {
+                alert("Name and Phone can't empty!");
+                return false;
+            }
+
+            return true;
+        }
+
+        var inputs = document.querySelectorAll( '.input-photo' );
+        Array.prototype.forEach.call( inputs, function( input ) {
+            var label	 = input.nextElementSibling,
+                labelVal = label.innerHTML;
+
+            input.addEventListener( 'change', function( e ) {
+                var fileName = '';
+                if( this.files && this.files.length > 1 )
+                    fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+                else
+                    fileName = e.target.value.split( '\\' ).pop();
+
+                if( fileName )
+                    label.querySelector( '.input-photo-result' ).innerHTML = fileName;
+                else
+                    label.innerHTML = labelVal;
+            });
+        });
+
     </script>
 </body>
 </html>

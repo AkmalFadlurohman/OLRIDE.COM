@@ -43,6 +43,9 @@ public class IdentityService extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 
+		out.println("Mantap");
+		response.sendRedirect("www.google.com");
+
 		String action = request.getParameter("action");
 		if ("getUser".equals(action)) {
 			int id = Integer.parseInt(request.getParameter("id"));
@@ -248,7 +251,7 @@ public class IdentityService extends HttpServlet {
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 			InputStream inputStream = null;
 			boolean isFileUploaded = false;
-			
+
 			if (isMultipart) {
 				ServletFileUpload servletFileUpload = new ServletFileUpload(new DiskFileItemFactory());
 				try {
