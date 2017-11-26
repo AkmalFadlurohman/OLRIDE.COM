@@ -77,25 +77,100 @@ app.post('/token/register', function(request, response) {
     })
 });
 
-// Memberikan daftar driver yang sedang mencari pesanan
-app.get('/driver/online', function(request, response) {
-    response.json(
-        [
-            {
-                token: 'asdasdasdasdasdasdasd',
-                token_fcm: 'asdasdasdasdasdasd'
-            },
-            {
-                token: 'asdasasdasdasdasdasd',
-                token_fcm: 'asdasdasdasdasdasd'
-            },
-            {
-                token: 'asdasdasdasdasdasdasd',
-                token_fcm: 'asdasdasdasdasdasd'
+// Mengirimkan pesan data ke FCM agar driver diarahkan ke chat
+app.post('/driver/start', function(request, response) {
+    var target = parseInt(request.body.driverId,10);
+    var query = { user: target };
+    var targetToken;
+
+    MongoClient.connect(url, function(err, db) {
+        db.collection("tokenOwners").findOne(query, function(err, res) {
+            if (err) throw err;
+            console.log("Finding FCM token for user "+ target);
+            console.log(query);
+            if (res) {
+                targetToken = res.token;
+                console.log("Found user's "+ target +" token "+ targetToken);
+                console.log('Sending ' + request.body.text + ' to ' + targetToken);
+
+                // Send message to FCM
+                var options = {
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type'  : 'application/json',
+                        'Authorization' : 'key=AAAAnjx6yDc:APA91bGzkbzuYmRCbZWNVh923dCIQ0KNkB4hbPwb-324AeG4JPeNj4Izt6j0svRf6QtM2uEwSeidqH2Vf2S8T82X_H0UvIkWLhWsz_mE9Aga6lCknA2YtJxEhEscL_eiRTka4mr0t0aP'
+                    },
+                    body: JSON.stringify({
+                        'to': targetToken, 
+                        'data': {
+                            'action' : "open_chat",
+                        }
+                    })
+                }
+                // Start the request
+                requestLib(options, function (error, resp, body) {
+                    if (!error && resp.statusCode == 200) {
+                        console.log(body)
+                        response.send("receiving " + JSON.stringify(request.body));
+                    }
+                });
+            } else {
+                console.log("Can not find token for user "+ target);
             }
-        ]
-    );
+            db.close();
+        });
+    });
 });
+
+
+// Mengirimkan pesan data ke FCM agar status order menjadi selesai
+app.post('/driver/finish', function(request, response) {
+    var target = parseInt(request.body.driverId,10);
+    var query = { user: target };
+    var targetToken;
+
+    MongoClient.connect(url, function(err, db) {
+        db.collection("tokenOwners").findOne(query, function(err, res) {
+            if (err) throw err;
+            console.log("Finding FCM token for user "+ target);
+            console.log(query);
+            if (res) {
+                targetToken = res.token;
+                console.log("Found user's "+ target +" token "+ targetToken);
+                console.log('Sending ' + request.body.text + ' to ' + targetToken);
+
+                // Send message to FCM
+                var options = {
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type'  : 'application/json',
+                        'Authorization' : 'key=AAAAnjx6yDc:APA91bGzkbzuYmRCbZWNVh923dCIQ0KNkB4hbPwb-324AeG4JPeNj4Izt6j0svRf6QtM2uEwSeidqH2Vf2S8T82X_H0UvIkWLhWsz_mE9Aga6lCknA2YtJxEhEscL_eiRTka4mr0t0aP'
+                    },
+                    body: JSON.stringify({
+                        'to': targetToken, 
+                        'data': {
+                            'action' : "close_chat",
+                        }
+                    })
+                }
+                // Start the request
+                requestLib(options, function (error, resp, body) {
+                    if (!error && resp.statusCode == 200) {
+                        console.log(body)
+                        response.send("receiving " + JSON.stringify(request.body));
+                    }
+                });
+            } else {
+                console.log("Can not find token for user "+ target);
+            }
+            db.close();
+        });
+    });
+
+});
+
 
 // Pemanggilan prosedur createChatroom melalui ajax request
 app.post('/chatroom/create', function(request, response) {
