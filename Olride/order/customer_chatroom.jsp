@@ -283,11 +283,11 @@
 		messaging.onMessage(function(payload) {
 			var scope = angular.element($("#driver-order-chat")).scope();
     		scope.$apply(function() {
-				scope.messages.push({
-					sender: driverId,
-					text: payload.notification.body
-				});
-				scrollDown();
+				scope.chatRoom.messages.push({
+                    sender: driverId,
+                    content: payload.notification.body
+                });
+                scrollDown();
     		})
 		});
 

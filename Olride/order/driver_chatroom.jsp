@@ -225,9 +225,9 @@
         messaging.onMessage(function(payload) {
             var scope = angular.element($("#driver-order-chat")).scope();
             scope.$apply(function() {
-                scope.messages.push({
+                scope.chatRoom.messages.push({
                     sender: customerId,
-                    text: payload.notification.body
+                    content: payload.notification.body
                 });
                 scrollDown();
             })

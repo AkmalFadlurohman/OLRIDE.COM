@@ -65,8 +65,8 @@ app.post('/token/register', function(request, response) {
             var reply;
             if (err) throw err;
             if (res) {
-                reply = "User "+ userId+ " with FCM token "  +" already registered";
-                console.log("User "+ userId+ " with FCM token "  +" already registered");
+                reply = "User "+ userId+ " with FCM token "+ fcmToken  +" already registered";
+                console.log("User "+ userId+ " with FCM token "+ fcmToken  +" already registered");
             } else {
                 reply = "Registered user "+userId+" with FCM token "+fcmToken;
                 registerToken(userId,fcmToken);
@@ -147,7 +147,7 @@ app.post('/chatroom/push', function(request, response) {
 // Menerima request untuk mengirimkan pesan ke :target, awalnya perlu dilakukan
 // pencarian token_fcm milik akun :target, kemudian buat request ke fcm
 app.post('/message/send/:target', function(request, response) {
-    var target = request.params.target;
+    var target = parseInt(request.params.target);
     var query = { user: target };
     var targetToken;
     // Search destination token
@@ -155,8 +155,35 @@ app.post('/message/send/:target', function(request, response) {
         db.collection("tokenOwners").findOne(query, function(err, res) {
             if (err) throw err;
             console.log("Finding FCM token for user "+ target);
+            console.log(query);
             if (res) {
                 targetToken = res.token;
+                console.log("Found user's "+ target +" token "+ targetToken);
+                console.log('Sending ' + request.body.text + ' to ' + targetToken);
+
+                // Send message to FCM
+                var options = {
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type'  : 'application/json',
+                        'Authorization' : 'key=AAAAnjx6yDc:APA91bGzkbzuYmRCbZWNVh923dCIQ0KNkB4hbPwb-324AeG4JPeNj4Izt6j0svRf6QtM2uEwSeidqH2Vf2S8T82X_H0UvIkWLhWsz_mE9Aga6lCknA2YtJxEhEscL_eiRTka4mr0t0aP'
+                    },
+                    body: JSON.stringify({
+                        'to': targetToken, 
+                        'notification': {
+                            'title' : "New Message",
+                            'body' : request.body.text
+                        }
+                    })
+                }
+                // Start the request
+                requestLib(options, function (error, resp, body) {
+                    if (!error && resp.statusCode == 200) {
+                        console.log(body)
+                        response.send("receiving " + JSON.stringify(request.body));
+                    }
+                });
             } else {
                 console.log("Can not find token for user "+ target);
             }
@@ -164,32 +191,6 @@ app.post('/message/send/:target', function(request, response) {
         });
     })
     //targetToken = 'e0l50GH8TEU:APA91bG0VKYBu3OW5F5Lgmd64PzL0iJ0MdzaO4O4Ny33N_lYtUJzpT9MV1my6WwGKiLWrujfFC1T7oTBgzJqqGfEL9VbvLJbqcjaPv2LbqP_ZG9DCyMxGFJ8iWZf85mSO_8tQfO-fxLr';
-    console.log('Sending ' + request.body.text + ' to ' + targetToken);
-
-    // Send message to FCM
-    var options = {
-        url: 'https://fcm.googleapis.com/fcm/send',
-        method: 'POST',
-        headers: {
-            'Content-Type'  : 'application/json',
-            'Authorization' : 'key=AAAAnjx6yDc:APA91bGzkbzuYmRCbZWNVh923dCIQ0KNkB4hbPwb-324AeG4JPeNj4Izt6j0svRf6QtM2uEwSeidqH2Vf2S8T82X_H0UvIkWLhWsz_mE9Aga6lCknA2YtJxEhEscL_eiRTka4mr0t0aP'
-        },
-        body: JSON.stringify({
-            'to': targetToken, 
-            'notification': {
-                'title' : "New Message",
-                'body' : request.body.text
-            }
-        })
-    }
-
-    // Start the request
-    requestLib(options, function (error, resp, body) {
-        if (!error && resp.statusCode == 200) {
-            console.log(body)
-            response.send("receiving " + JSON.stringify(request.body));
-        }
-    });
     
 });
 
