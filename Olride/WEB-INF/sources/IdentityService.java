@@ -43,9 +43,6 @@ public class IdentityService extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 
-		out.println("Mantap");
-		response.sendRedirect("www.google.com");
-
 		String action = request.getParameter("action");
 		if ("getUser".equals(action)) {
 			int id = Integer.parseInt(request.getParameter("id"));

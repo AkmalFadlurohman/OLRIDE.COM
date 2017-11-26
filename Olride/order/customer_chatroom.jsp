@@ -2,8 +2,7 @@
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
 <%
-	int id = 3;
-	/*if (request.getParameter("id") == null) {
+	if (request.getParameter("id") == null) {
 		request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
 		request.getRequestDispatcher("../login/login.jsp").forward(request,response);
 	}
@@ -52,7 +51,7 @@
 		} else if ("forbidden".equals(msg)) {
 			response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
 		}
-	}*/
+	}
 %>
 <html>
 <head>

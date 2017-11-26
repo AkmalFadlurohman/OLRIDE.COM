@@ -278,7 +278,7 @@
 										"	<img src='../IDServices/ImageRetriever?id="+users.getId()+"' onerror='this.src=\"../img/default_profile.jpeg\"' style='float: left; border: 1px solid black; margin: 10px' width='120' height='125'>" +
 										"	<p style='font-size: 1.4em; margin:20px 10px 3px 10px'>"+ users.getFullname() +"</p>" + 
 										"	<p style='margin-top: 0'><span class='text-orange'><b><i class='icon icon-star'></i>"+drivers.getRating()+"</b></span> ("+drivers.getVotes()+" votes)</p>" + 
-										"	<span class='btn green' style='float: right; margin: 10px' onclick='chooseDriver("+drivers.getId()+")'>I CHOOSE YOU!</span>" +
+										"	<span class='btn green' style='float: right; margin: 10px' onclick='chooseDriver("+users.getId()+")'>I CHOOSE YOU!</span>" +
 										"</div>");
 
 								} else {
