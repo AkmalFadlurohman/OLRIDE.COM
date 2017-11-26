@@ -271,7 +271,6 @@
 			.then(function(currentToken) {
 				console.log(currentToken);
 				fcmToken = currentToken;
-				registerToken(myId,fcmToken);
 			})
 			.catch(function(err) {
 				console.log('Error occured.', err);
@@ -346,22 +345,6 @@
 			} else {
 				alert('Message is empty!');
 			}
-		}
-		function registerToken(userId,fcmToken) {
-			$.ajax({
-				type: 'POST',
-				url: 'http://localhost:8123/token/register',
-				data: {
-					user: userId,
-					token: fcmToken
-				},
-				success: function(responseData, textStatus, jqXHR) {
-					var value = responseData.someKey;
-				},
-				error: function (responseData, textStatus, errorThrown) {
-					alert('POST failed.');
-				},
-			});
 		}
 		function scrollDown() {
 			setTimeout(function() {
