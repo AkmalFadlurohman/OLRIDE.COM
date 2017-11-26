@@ -135,7 +135,7 @@
 				</div>
 			</div>
 			<div class="col-3">
-				<div id="page-tab-driver" class="tab text-center" onclick="window.location.href='http://www.google.com/'">
+				<div id="page-tab-driver" class="tab text-center" onclick="window.location.href='/Olride/history/driver_history.jsp?id=<%out.print(id);%>'">
 					<div class="page-tab-content">
 						DRIVER HISTORY
 					</div>
