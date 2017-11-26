@@ -128,7 +128,7 @@
 
 		<div class="row">
 			<div class="col-3">
-				<div id="page-tab-customer" class="tab text-center active">
+				<div id="page-tab-customer" class="tab text-center active" onclick="window.location.href='/Olride/history/transaction_history.jsp?id=<%out.print(id);%>'">
 					<div class="page-tab-content">
 						MY PREVIOUS ORDER
 					</div>
@@ -186,7 +186,7 @@
 								"		<input type='submit' class='btn red' value='HIDE' style='float: right; margin: 10px'>" +
 								"	</form>" +
 								"	<p style='margin-bottom:0px'>Sunday, September 24th 2017</p>"+
-								"	<h3 style='margin:0px'>Joko Anwar</h3>"+
+								"	<h3 style='margin:0px'>"+d.getFullname()+"</h3>"+
 								"	<small>"+OM.getListOrderCustomer(user.getId())[i].getPickLoc()+" - "+OM.getListOrderCustomer(user.getId())[i].getDestLoc()+"</small><br><br>"+
 								"	You rated: " + stars +
 								"	<br>You commented:<br>"+
