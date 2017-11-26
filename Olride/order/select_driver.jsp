@@ -296,7 +296,7 @@
                 </div>
             </div>
 
-			<form method="post" id="submit_select_drv" action="order_chatroom.jsp">
+			<form method="post" id="submit_select_drv" action="customer_chatroom.jsp">
 				<input type="hidden" name="id" value=<%out.println(user.getId()); %>>
 				<input type="hidden" name="action" value="selectDriver">
 				<input type="hidden" name="pickLoc" value=<%out.println(pickLoc);%>>

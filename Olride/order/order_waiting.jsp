@@ -63,7 +63,7 @@
                     <br>
                     <br>
                     <br>
-                    <a href="/Olride/order/order_driver_chat.jsp?id=<%out.print(id);%>">Next shortcut</a>
+                    <a href="/Olride/order/driver_chatroom.jsp?id=<%out.print(id);%>">Next shortcut</a>
                 </div>
             </div>
         </div>
