@@ -132,6 +132,7 @@
 			%>
 			<p><i class="icon icon-mail"></i> <% out.print(user.getEmail()); %></p>
 			<p><i class="icon icon-phone"></i> <% out.println(user.getPhone()); %></p>
+			<%out.println(driver.getStatus());%>
 		</div>
 		
 		<% 	

@@ -43,9 +43,6 @@ public class IdentityService extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 
-		out.println("Mantap");
-		response.sendRedirect("www.google.com");
-
 		String action = request.getParameter("action");
 		if ("getUser".equals(action)) {
 			int id = Integer.parseInt(request.getParameter("id"));
@@ -151,6 +148,18 @@ public class IdentityService extends HttpServlet {
 				String prefDriverJson = new Gson().toJson(user);
 				out.println(prefDriverJson);		
 			}	
+		} else if ("setDriverStatusOn".equals(action)) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			changeDriverStatus(id,"active");
+			driver = getDriverByID(id);
+			String dJson = new Gson().toJson(driver);
+			out.println(dJson);	
+		} else if ("setDriverStatusOff".equals(action)) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			changeDriverStatus(id,"off");
+			driver = getDriverByID(id);
+			String dJson = new Gson().toJson(driver);
+			out.println(dJson);	
 		} else if ("addLocation".equals(action) || "updateLocation".equals(action) || "deleteLocation".equals(action) || "completeOrder".equals(action) || "hideOrder".equals(action)){
 			int id = Integer.parseInt(request.getParameter("id"));
 			Cookie cookies[] = request.getCookies();
@@ -408,6 +417,7 @@ public class IdentityService extends HttpServlet {
 				driver.setId(resultSet.getInt("driver_id"));
 				driver.setVotes(resultSet.getInt("votes"));
 				driver.setTotalScore(resultSet.getInt("total_score"));
+				driver.setStatus(resultSet.getString("status"));
 			}
 			connect.close();
 		} catch (SQLException e) {
@@ -696,15 +706,14 @@ public class IdentityService extends HttpServlet {
 			Class.forName("com.mysql.jdbc.Driver");
 			connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/olride_IDServices","root","");
 			if (connect != null) {
-				String query = "INSERT INTO driver (driver_id, total_score, votes)" + " VALUES (?, ?, ? )";
+				String query = "INSERT INTO driver (driver_id, total_score, votes, status)" + " VALUES (?, ?, ?, ?)";
 				
 				PreparedStatement preparedStmt = connect.prepareStatement(query);
 		    		preparedStmt.setInt(1, userID);
 		    		preparedStmt.setInt(2, 0);
 		    		preparedStmt.setInt(3, 0);
-		    
+		    		preparedStmt.setString(4,"off");
 		    		preparedStmt.executeUpdate();
-		    
 				if (preparedStmt != null) {
 					connect.close();			
 				}
@@ -750,6 +759,28 @@ public class IdentityService extends HttpServlet {
 		
 			statement = connect.createStatement();
 			statement.executeUpdate("UPDATE driver SET votes = votes + 1, total_score = total_score +"+score+" WHERE driver_id = '"+driverID+"'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	void changeDriverStatus(int driverID,String status) {
+		Connection connect = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/olride_IDServices","root","");
+			String query="UPDATE driver SET status =  ?   WHERE driver_id= ? ";
+			PreparedStatement preparedStatement = connect.prepareStatement(query);
+			preparedStatement.setString(1, status);
+			preparedStatement.setInt(2, driverID);
+			
+			int row = preparedStatement.executeUpdate();
+			if (row > 0) {
+				connect.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

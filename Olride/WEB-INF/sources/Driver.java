@@ -10,6 +10,7 @@ public class Driver {
    private int id;
    private int totalVotes;
    private int totalScore;
+   private String status;
    
 
    public int getId() {
@@ -17,7 +18,7 @@ public class Driver {
    }
 
    public String toString() {
-	   return ("driver [id=" + id + ", totalVotes=" + totalVotes + ", totalScore=" + totalScore + "]");
+	   return ("driver [id=" + id + ", totalVotes=" + totalVotes + ", totalScore=" + totalScore + ", status="+ status+ "]");
    }
 
    public float getRating() {
@@ -35,6 +36,10 @@ public class Driver {
    public int getTotalScore(){
        return (totalVotes);
    }
+
+   public String getStatus(){
+       return status;
+   }
    
    public void setId(int x) {
        id = x;
@@ -46,5 +51,9 @@ public class Driver {
    
    public void setTotalScore(int y){
        totalScore = y;
+   }
+
+   public void setStatus(String status){
+       this.status = status;
    }
 }

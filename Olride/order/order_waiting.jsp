@@ -31,8 +31,24 @@
             buffer.close();
             String uJson = res.toString();
             User user = new Gson().fromJson(uJson,User.class);
+            Driver driver = new Driver();
             if (!"driver".equals(user.getStatus())) {
                 response.sendRedirect("select_location.jsp?id="+id);
+            } else {
+                httpPost = (HttpURLConnection) urlAddress.openConnection();
+                httpPost.setRequestMethod("POST");
+                httpPost.setDoOutput(true);
+                writer = new DataOutputStream(httpPost.getOutputStream());
+                writer.writeBytes("action=setDriverStatusOn&id="+user.getId());
+                writer.flush();
+                writer.close();
+                buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+                res = new StringBuilder();
+                while ((inputLine = buffer.readLine()) != null) {
+                    res.append(inputLine);
+                }
+                String dJson = res.toString();
+                driver = new Gson().fromJson(dJson,Driver.class);
             }
         %>
         <title>Waiting Order</title>
@@ -58,7 +74,7 @@
                 <br>
                 <br>
                 <div class="col-6 text-center">
-                    <a href="/Olride/order/order.jsp?id=<%out.print(id);%>" class="btn red" style="color: white; padding: 15px 25px">Cancel</a>
+                    <a href="/Olride/order/order.jsp?action=setDriverStatusOff&id=<%out.print(id);%>" class="btn red" style="color: white; padding: 15px 25px">Cancel</a>
                     <br>
                     <br>
                     <br>
