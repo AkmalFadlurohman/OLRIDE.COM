@@ -5,62 +5,25 @@ PR-OJEK adalah aplikasi ojek online berbasis web memungkinkan seorang pengguna u
 Seorang driver yang akan mencari order harus mengaktifkan statusnya agar dapat menjadi visible ketika ada user lain yang akan mencari ojek. Pengguna dapat saling bertukar pesan dengan driver secara realtime di halaman order chat driver.
 
 ## Anggota Tim
-13515074 - Akmal Fadlurohman <br />
-13515083 - Muhammad Hilmi Asyrofi <br />
-13515146 - Fadhil Imam Kurnia <br />
+* **13515074 - Akmal Fadlurohman** <br />
+* **13515083 - Muhammad Hilmi Asyrofi** <br />
+* **13515146 - Fadhil Imam Kurnia** <br />
 
-## Petunjuk Pengerjaan
-1. Buatlah organisasi pada gitlab dengan format "IF3110-2017-KXX-nama kelompok", dengan XX adalah nomor kelas.
-2. Tambahkan anggota tim pada organisasi anda.
-3. Fork pada repository ini dengan organisasi yang telah dibuat.
-4. Ubah hak akses repository hasil Fork anda menjadi **private**.
-5. [DELIVERABLE] Buat tugas sesuai spesifikasi dan silakan commit pada repository anda (hasil fork). Lakukan berberapa commit dengan pesan yang bermakna, contoh: `add register form`, `fix logout bug`, jangan seperti `final`, `benerin dikit`. Disarankan untuk tidak melakukan commit dengan perubahan yang besar karena akan mempengaruhi penilaian (contoh: hanya melakukan satu commit kemudian dikumpulkan). Sebaiknya commit dilakukan setiap ada penambahan fitur. **Commit dari setiap anggota tim akan mempengaruhi penilaian individu.** Jadi, setiap anggota tim harus melakukan sejumlah commit yang berpengaruh terhadap proses pembuatan aplikasi.
-6. Edit file readme ini semenarik mungkin (gunakan panduan Markdown language), diperbolehkan untuk merubah struktur dari readme ini. (Soal tidak perlu dipertahankan).
-7. Pada Readme terdapat tampilan aplikasi dan penjelasan mengenai pembagian tugas masing-masing anggota (lihat formatnya pada bagian **pembagian tugas**).
-8. Merge request dari repository anda ke repository ini dengan format **Nama kelompok** - **NIM terkecil** - **Nama Lengkap dengan NIM terkecil** sebelum **Senin, 27 November 2017 23.59**.
+## Arsitektur Umum
+
+Berikut gambaran arsitektur umum sistem:
 
 ![](img/arsitektur_umum.png)
 
-### Arsitektur Umum
-Tugas 3 ini terdiri dari komponen Tugas 2 dan tambahan yang harus dibuat:
-* `Pemanfaatan FCM`: Pengiriman pesan dari pelanggan ke driver atau sebaliknya dengan menggunakan layanan Firebase Cloud Messaging (FCM).
-* `Implementasi MEAN stack`: Membuat REST service untuk keperluan layanan chat memanfaatkan FCM menggunakan Node, Express dan Mongo, serta membuat halaman chat yang menggunakan Angular.
+### Deskripsi Sistem
+Sistem ini merupakan pengembangan lanjutan dari sistem PR-Ojek tahap sebelumnya. Perbedaaan dengan tahap sebelumnya terletak pada perubahan pada fungsionalitas order, peningkatan security, dan tambahan fitur chat yang menghubungkan antara customer dan driver. <br /> 
+Fitur chat diimplementasikan menggunakan MEAN Stack. REST service untuk keperluan chatting pada sistem ini diimplementasikan dengan Node dan Express. Selain itu, Firebase Cloud Messaging juga digunakan dalam implementasi PR-OJEK pada bagian chat. Data history chat disimpan dalam basis data MongoDB.
 
-### Deskripsi Tugas
-Kali ini, Anda diminta untuk merubah sedikit fungsionalitas order yang sudah ada dan menambah fungsionalitas chat pada aplikasi yang telah anda buat pada tugas 2. Aplikasi ini akan menggunakan MEAN stack untuk halaman chat dan REST service, serta menggunakan layanan cloud Firebase Cloud Messaging sebagai media penyampaian pesan. Selain itu, Anda juga diminta untuk mengimplementasikan beberapa fitur security. Spesifikasi untuk tugas ini adalah sebagai berikut:
+## Fungsionalitas Tambahan
 
-1. Halaman Order akan bergantung pada status pengguna, apakah driver atau bukan.
-2. Bila status pengguna merupakan driver maka pada halaman order akan ditampilkan fitur finding order dimana akan membuat driver visible ketika user ingin melakukan order pada halaman select driver. Apabila driver tidak melakukan finding order, maka driver tidak akan ditampilkan pada halaman select driver ketika pengguna non driver melakukan order.
-3. Pengguna dapat saling bertukar pesan dengan driver secara realtime di halaman order chat driver. Fitur ini harus diimplementasikan dengan MEAN stack, di mana fitur halmaman chat harus diimplementasikan dengan Angular dan fitur REST service diimplementasikan menggunakan Node, Express, dan Mongo.
-4. REST service yang akan menghubungkan client dan Firebase Cloud Messaging. Rincian service ini akan dijelaskan kemudian. Silahkan pelajari cara mendaftar ke layanan Firebase, dan cara membuat project baru.
-5. Pengguna harus login terlebih dahulu sebelum dapat melakukan chat. Silahkan cari cara untuk sharing session antara JSP dan MEAN. Sebagai contoh, anda dapat menggunakan cookie yang dapat diakses oleh keduanya.
-6. Pada halaman order select driver, aplikasi hanya menampilkan driver yang **sesuai requirement** saja (lihat poin 7). Ketika nama driver dipilih, maka akan muncul kotak chat antar pengguna non driver dan driver pada tab chat driver di halaman order.
-7. Requirement yang dimaksud ialah driver memiliki preferred location yang dituju pengguna, online, **sedang melakukan finding order**, dan tidak sedang mendapat order.
-8. Pengguna dengan IP address yang berbeda tidak dapat menggunakan access token yang sama.
-9. Pengguna dengan user-agent yang berbeda tidak dapat menggunakan access token yang sama. Dalam hal ini, user-agent yang dimaksud adalah web browser yang digunakan.
-10. Komponen yang harus digunakan pada AngularJS adalah:
-    * Data binding (ng-model directives)
-    * Controllers (ng-controllers)
-    * ng-repeat, untuk menampilkan list
-    * $http untuk AJAX request
-    * $scope untuk komunikasi data antara controller dengan view.
-    * ng-show dan ng-hide untuk menampilkan/menyembunyikan elemen
-11. Tidak perlu memperhatikan aspek keamanan dan etika dalam penyimpanan data.
-
-### Rincian REST Service
-1. REST service untuk keperluan chatting **wajib** diimplementasikan dengan **Node dan Express**.
-2. REST service menangani hal-hal sebagai berikut.
-    * Memberikan daftar driver yang sesuai requirement (sesuai deskripsi tugas nomor 7)
-    * Menyimpan identitas (token FCM) dari masing-masing pengguna yang sedang online
-    * Menerima *request* dari user A untuk chat ke user B, lalu membuat *request* ke FCM untuk pengiriman pesan ke token FCM user B.
-    * Menyimpan ke basis data history chat dari seorang pemesan dan seorang driver. Misalkan A pernah memesan driver B. Jika suatu saat A akan memesan lagi ke driver B, maka kotak chat menampilkan chat yang dilakukan pada pemesanan sebelumnya.
-3. Untuk penyimpanan history chat, basis data yang digunakan **wajib Mongo**. Anda tidak diperkenankan menggunakan basis data yang lain, termasuk layanan Firebase Database.
-
-### Halaman Tambahan
-1. Halaman Order pada pengguna non driver, terdapat tambahan chat driver pada tahap ketiga
-2. Halaman Order pada pengguna driver
-
-### Rincian Arsitektur Aplikasi Chat
+### Security
+### Finding Order
+### Chat Pengguna
 
 ![](img/mekanisme_chat.png)
 
@@ -102,11 +65,6 @@ Identity Service harus mengecek:
 
 Jika jawaban salah satu pertanyaan tersebut adalah "ya", maka identity service akan memberikan respon error dan detail errornya.
 
-### Mekanisme pembuatan token
-Token anda harus mempunyai informasi terkait browser (user agent) dan IP address dari pengguna. Identity service harus dapat mengekstrak informasi tersebut. Sebagai contoh, anda dapat melakukan (tidak harus) konstruksi token dengan `format:some_random_string#user_agent#ip_address`. Jika pada tugas 2 token anda adalah abcdefgh Maka pada tugas 3 token anda adalah `abcdefgh#Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36#167.205.22.104`.
-
-Token tidak perlu dienkripsi-dekripsi (for simplicity)
-
 ### Tampilan Program
 Halaman Order pada Driver
 
@@ -137,17 +95,12 @@ Selain itu, silahkan cari "user agent parser", "how to get my IP from HTTPServle
 
 
 ### Prosedur Demo
-Sebelum demo, asisten akan melakukan checkout ke hash commit terakhir yang dilakukan sebelum deadline. Hal ini digunakan untuk memastikan kode yang akan didemokan adalah kode yang terakhir disubmit sebelum deadline.
+Sebelum demo, asisten akan melakukan checkout ke hash commit terakhir yang dilakukan sebelum deadline. Hal ini digunakan untuk memastikan kode yang akan didemokan adalah kode yang terakhir disubmit sebelum deadline
+<br />
+<br />
 
 
 ### Pembagian Tugas
-
-
-Tugas kali ini cukup rumit, karena melibatkan layanan dari pihak ketiga, dan framework. Bila tak mengerti, luangkan waktu belajar lebih banyak. Bila belum juga mengerti, belajarlah bersama-sama kelompokmu. Bila Anda sekelompok bingung, bertanyalah (bukan menyontek) ke teman seangkatanmu. Bila seangkatan bingung, bertanyalah pada asisten manapun.
-
-
-Harap semua anggota kelompok mengerjakan baik implementasi Firebase sebagai *cloud service* maupun *framework* AngularJS. Tuliskan pembagian tugas seperti berikut ini.
-
 
 Chat App Front-end :
 1. Fungsionalitas A : 135140XX  
@@ -165,7 +118,7 @@ Fitur security (IP, User-agent) :
 
 ## About
 
-Asisten IF3110 2016
+Asisten IF3110 2017
 
 Ade | Johan | Kristianto | Micky | Michael | Rangga | Raudi | Robert | Sashi
 
