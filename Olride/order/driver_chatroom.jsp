@@ -81,7 +81,7 @@
             response.sendRedirect("select_location.jsp?id="+id);
         }
     %>
-    <title>Waiting Order</title>
+    <title>Driver Chatroom</title>
     <link rel="stylesheet" type="text/css" href="../css/new_style.css">
     <link rel="stylesheet" type="text/css" href="../css/new_chat.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>

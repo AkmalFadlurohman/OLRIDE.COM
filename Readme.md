@@ -2,7 +2,7 @@
 
 ## Deskripsi Singkat
 PR-OJEK adalah aplikasi ojek online berbasis web memungkinkan seorang pengguna untuk menjadi penumpang dan/atau driver ojek online. Untuk menggunakan aplikasi ini, seorang pengguna harus melakukan login. Pengguna dapat menjadi penumpang maupun driver pada akun yang sama. Untuk menjadi driver, pengguna harus mengaktifkan opsi menjadi driver pada profilnya.
-Seorang driver yang akan mencari order harus mengaktifkan statusnya agar dapat menjadi visible ketika ada user lain yang akan mencari ojek. Pengguna dapat saling bertukar pesan dengan driver secara realtime di halaman order chat driver.
+Seorang driver yang akan mencari order harus mengaktifkan statusnya agar dapat menjadi active ketika ada user lain yang akan mencari ojek. Pengguna dapat saling bertukar pesan dengan driver secara realtime di halaman order chat.
 
 ## Anggota Tim
 * **13515074 - Akmal Fadlurohman** <br />
@@ -23,7 +23,9 @@ Fitur chat diimplementasikan menggunakan MEAN Stack. REST service untuk keperlua
 ## Fungsionalitas Tambahan
 
 ### Security
- Tampilan 2 browser yang tidak bisa login
+ Tampilan browser yang tidak bisa login
+
+![](img/invalid_access.png)
 
 <br/>
 
@@ -57,17 +59,20 @@ Halaman Order pada Pengguna, Chat Driver
 ## Pembagian Tugas
 
 Chat App Front-end :
-1. Fungsionalitas A : 135140XX  
-2. Fungsionalitas B : 135140XX  
-
+1. Chatbox : 13515146  
+2. Tampilan finding order: 13515146
 
 Chat REST Service:  
-1. Fungsionalitas C : 135140XX  
-2. Fungsionalitas D : 135140XX  
+1. Fungsionalitas pengiriman pesan : 13515074,13515146  
+2. Fungsionalitas interaksi dengan server firebase : 13515146  
+3. Fungsionalitas penyimpanan chat history: 13515074
+4. Fungsionalitas membuka chatroom untuk driver dari server side: 13515074
+5. Fungsionalitas menutup chatroom untuk driver dari server side: 13515146 
 
 Fitur security (IP, User-agent) :
-1. Fungsionalitas E : 135140XX
-2. Fungsionalitas F : 135140XX
+1. Validasi user agent dan ip : 13515074
+
+Readme.md: 13515083
 
 
 ## About
