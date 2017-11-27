@@ -372,6 +372,7 @@
 				$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
 			}, 30);
 		}
+		
 	</script>
 
 </body>
