@@ -62,6 +62,11 @@ Chat App Front-end :
 1. Chatbox : 13515146  
 2. Tampilan finding order: 13515146
 
+Remake tampilan app: 13515146
+
+Finding Order Back-end :
+1. Pencarian driver yang sedang aktif (melakukan finding order): 13515074
+
 Chat REST Service:  
 1. Fungsionalitas pengiriman pesan : 13515074,13515146  
 2. Fungsionalitas interaksi dengan server firebase : 13515146  
