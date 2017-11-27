@@ -30,11 +30,9 @@
 		buffer.close();
 		String uJson = res.toString();
 		User user = new Gson().fromJson(uJson,User.class);
-		if (!"driver".equals(user.getStatus())) {
-			response.sendRedirect("select_location.jsp?id="+id);
-		}
+		Driver driver = null;
+		String dJson = null;
 		String action = request.getParameter("action");
-		Driver driver = new Driver();
 		if ("setDriverStatusOff".equals(action)) {
 			httpPost = (HttpURLConnection) urlAddress.openConnection();
             httpPost.setRequestMethod("POST");
@@ -48,9 +46,31 @@
             while ((inputLine = buffer.readLine()) != null) {
                 res.append(inputLine);
             }
-            String dJson = res.toString();
-            driver = new Gson().fromJson(dJson,Driver.class);
         }
+		if (!"driver".equals(user.getStatus())) {
+			response.sendRedirect("select_location.jsp?id="+id);
+		} else {
+			httpPost = (HttpURLConnection) urlAddress.openConnection();
+			httpPost.setRequestMethod("POST");
+			httpPost.setDoOutput(true);
+			writer = new DataOutputStream(httpPost.getOutputStream());
+			writer.writeBytes("action=getDriver&id="+user.getId());
+			writer.flush();
+			writer.close();
+			buffer = new BufferedReader(new InputStreamReader(httpPost.getInputStream()));
+			res = new StringBuilder();
+			while ((inputLine = buffer.readLine()) != null) {
+				res.append(inputLine);
+			}
+			dJson = res.toString();
+			driver = new Gson().fromJson(dJson,Driver.class);
+		}
+		if (driver != null) {
+			if ("active".equals(driver.getStatus())) {
+				response.sendRedirect("order_waiting.jsp?id="+id);
+			}
+		}
+		
 	%>
 	<title>Finding Order</title>
 	<link rel="stylesheet" type="text/css" href="../css/new_style.css">

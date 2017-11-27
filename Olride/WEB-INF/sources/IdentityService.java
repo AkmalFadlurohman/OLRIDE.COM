@@ -748,6 +748,11 @@ public class IdentityService extends HttpServlet {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		User user = new User();
+		user = getUserByID(userID);
+		if ("driver".equals(user.getStatus())) {
+			changeDriverStatus(userID,"off");
+		}
 	}
 	void upvoteDriver(int driverID,int score) {
 		Connection connect = null;
