@@ -58,6 +58,7 @@
 <head>
 	<title>Complete Your Order</title>
 	<link rel="stylesheet" type="text/css" href="../css/new_style.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 	<%
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
@@ -200,13 +201,15 @@
 						<br>
 						<br>
 						<textarea id="comment" name="comment" form="submit_cmplt_ordr" style="width: 90%; height: 100px; padding: 10px; resize: none" placeholder="Your comment..." ></textarea>
-						<input class="btn green" style="float: right; margin: 30px" type="submit" name="submit" value="COMPLETE ORDER">
 					</form>
+					<input class="btn green" style="float: right; margin: 30px" type="submit" name="submit" value="COMPLETE ORDER" onclick="finishOrder()">
 				</div>
 			</div> 
 		</div>
 
 		<script type="text/javascript">
+			var driverId = <%out.println(selectedDriverID);%>;
+
 			var star1 = document.getElementById('1-star');
 			var star2 = document.getElementById('2-star');
 			var star3 = document.getElementById('3-star');
@@ -242,6 +245,26 @@
 					} else {
 						document.getElementById('star-'+i).style.color = "#c2c2c2";
 					}
+				}
+			}
+
+			function finishOrder() {
+				var sure = confirm('Are you sure you want to finish this order?');
+				if (sure) {
+					$.ajax({
+						type: 'POST',
+						url: 'http://localhost:8123/driver/finish',
+						data: {
+							'driverId': driverId,
+						},
+						success: function(responseData, textStatus, jqXHR) {
+							console.log('finish success!');
+							$('#submit_cmplt_ordr').submit();
+						},
+						error: function (responseData, textStatus, errorThrown) {
+							alert('POST failed.');
+						},
+					});
 				}
 			}
 
