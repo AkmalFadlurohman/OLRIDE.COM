@@ -193,8 +193,8 @@
 				<input type="hidden" name="pickLoc" value=<%out.print(pickLoc);%>>
 				<input type="hidden" name="destLoc" value=<%out.print(destLoc);%>>
 				<input type="hidden" name="selected_driver" value=<%out.print(driverId);%>>
-				<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" style="width:150px; color:white; font-size:larger; padding: 10px 25px" onclick="finishOrder()">
 			</form>
+			<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" style="width:150px; color:white; font-size:larger; padding: 10px 25px" onclick="finishOrder()">
 		</div>
 
 		<br>
@@ -357,43 +357,15 @@
 						'driverId': driverId,
 					},
 					success: function(responseData, textStatus, jqXHR) {
-
+						console.log('finish success!');
+						$('#finish-form').submit();
 					},
 					error: function (responseData, textStatus, errorThrown) {
 						alert('POST failed.');
 					},
 				});
-				setTimeout(null, 100);
 			}
-			return sure;
 		}
-
-		$('#finish-form').submit(function() {
-			var sure =  confirm('Are you sure you want to finish chatting with your driver?');
-			if (sure) {
-				$.ajax({
-					type: 'POST',
-					url: 'http://localhost:8123/driver/finish',
-					data: {
-						'driverId': driverId,
-					},
-					success: function(responseData, textStatus, jqXHR) {
-						$.ajax({   
-							type: "POST",
-							data : $('#finish-form').serialize(),
-							url: "complete_order.jsp",   
-							success: function(data){
-								$("#results").html(data);                       
-							}   
-						}); 						
-					},
-					error: function (responseData, textStatus, errorThrown) {
-						alert('POST failed.');
-					},
-				});
-			}
-			return false;
-		});
 
 		function scrollDown() {
 			setTimeout(function() {
