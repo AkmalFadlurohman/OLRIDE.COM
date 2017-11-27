@@ -4,24 +4,10 @@
 PR-OJEK adalah aplikasi ojek online berbasis web memungkinkan seorang pengguna untuk menjadi penumpang dan/atau driver ojek online. Untuk menggunakan aplikasi ini, seorang pengguna harus melakukan login. Pengguna dapat menjadi penumpang maupun driver pada akun yang sama. Untuk menjadi driver, pengguna harus mengaktifkan opsi menjadi driver pada profilnya.
 Seorang driver yang akan mencari order harus mengaktifkan statusnya agar dapat menjadi visible ketika ada user lain yang akan mencari ojek. Pengguna dapat saling bertukar pesan dengan driver secara realtime di halaman order chat driver.
 
-
-
-
-
-Melakukan upgrade Website ojek online sederhana pada Tugas 2 dengan mengaplikasikan ***cloud service* (Firebase Cloud Messaging) dan *framework* MEAN stack**.
-
-**Luangkan waktu untuk membaca spek ini sampai selesai. Kerjakan hal yang perlu saja.**
-
-## Tujuan Pembuatan Tugas
-
-Diharapkan dengan tugas ini Anda dapat mengerti:
-* MEAN stack (Mongo, Express, Angular, dan Node)
-* *Cloud service* Firebase Cloud Messaging (FCM) dan kegunaannya.
-* Web security terkait access token dan HTTP Headers.
-
 ## Anggota Tim
-Setiap kelompok beranggotakan **3 orang dari kelas yang sama**. Jika jumlah mahasiswa dalam satu kelas modulo 3 menghasilkan 1, maka hanya 1 kelompok terdiri dari 4 mahasiswa. Jika jumlah mahasiswa modulo 3 menghasilkan 2, maka ada dua kelompok yang beranggotakan 4 orang. Anggota kelompok harus berbeda dengan tugas 1 dan tugas 2.
-
+13515074 - Akmal Fadlurohman <br />
+13515083 - Muhammad Hilmi Asyrofi <br />
+13515146 - Fadhil Imam Kurnia <br />
 
 ## Petunjuk Pengerjaan
 1. Buatlah organisasi pada gitlab dengan format "IF3110-2017-KXX-nama kelompok", dengan XX adalah nomor kelas.
