@@ -2,8 +2,7 @@
 <%@ page import="java.net.URL,javax.xml.namespace.QName,javax.xml.ws.Service,javax.servlet.*,javax.servlet.http.*,com.google.gson.Gson,com.olride.bean.*,com.olride.IDServices.*" %>
 <%@ page import="java.io.BufferedReader,java.io.DataOutputStream,java.io.InputStreamReader,java.net.*"%>
 <%
-    int id = 1;
-    /*if (request.getParameter("id") == null) {
+    if (request.getParameter("id") == null) {
         request.setAttribute("script","<script>document.getElementById(\"requireLogin\").innerHTML=\"Please login using your username and password first!\";</script>");
         request.getRequestDispatcher("../login/login.jsp").forward(request,response);
     }
@@ -52,7 +51,7 @@
         } else if ("forbidden".equals(msg)) {
             response.sendRedirect("../IDServices/Logout?action=forbid&id="+id);
         }
-    }*/
+    }
 %>
 <html>
 <head>
@@ -101,7 +100,7 @@
         </div>
         <%
             //Get customer info
-            int customerId = 3;
+            int customerId = Integer.parseInt(request.getParameter("customerId"));
             httpPost = (HttpURLConnection) urlAddress.openConnection();
             httpPost.setRequestMethod("POST");
             httpPost.setDoOutput(true);
@@ -214,7 +213,6 @@
             .then(function(currentToken) {
                 console.log(currentToken);
                 fcmToken = currentToken;
-                registerToken(myId,fcmToken);
             })
             .catch(function(err) {
                 console.log('Error occured.', err);
@@ -289,22 +287,6 @@
             } else {
                 alert('Message is empty!');
             }
-        }
-        function registerToken(userId,fcmToken) {
-            $.ajax({
-                type: 'POST',
-                url: 'http://localhost:8123/token/register',
-                data: {
-                    user: userId,
-                    token: fcmToken
-                },
-                success: function(responseData, textStatus, jqXHR) {
-                    var value = responseData.someKey;
-                },
-                error: function (responseData, textStatus, errorThrown) {
-                    alert('POST failed.');
-                },
-            });
         }
         function scrollDown() {
             setTimeout(function() {

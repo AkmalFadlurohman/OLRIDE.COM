@@ -78,11 +78,6 @@
                 <br>
                 <div class="col-6 text-center">
                     <a href="/Olride/order/order.jsp?action=setDriverStatusOff&id=<%out.print(id);%>" class="btn red" style="color: white; padding: 15px 25px">Cancel</a>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <a href="/Olride/order/driver_chatroom.jsp?id=<%out.print(id);%>">Next shortcut</a>
                 </div>
             </div>
         </div>
@@ -122,9 +117,9 @@
                 });
 
             });
-
             messaging.onMessage(function(payload) {
-			    console.log(payload);
+                var customerId = payload.notification.body;
+                window.location.replace('driver_chatroom.jsp?id='+myId+'&customerId='+customerId);
             });
             
             function registerToken(userId,fcmToken) {
