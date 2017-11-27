@@ -256,7 +256,7 @@
 			projectId: "olride-69182",
 			storageBucket: "olride-69182.appspot.com",
 			messagingSenderId: "679619512375"
-		};
+		};	
 		firebase.initializeApp(config);
 		
 		const messaging = firebase.messaging();

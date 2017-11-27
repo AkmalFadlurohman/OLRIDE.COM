@@ -79,6 +79,7 @@ app.post('/token/register', function(request, response) {
 
 // Mengirimkan pesan data ke FCM agar driver diarahkan ke chat
 app.post('/driver/start', function(request, response) {
+    var userId = parseInt(request.body.userId,10);
     var target = parseInt(request.body.driverId,10);
     var query = { user: target };
     var targetToken;
@@ -102,9 +103,10 @@ app.post('/driver/start', function(request, response) {
                         'Authorization' : 'key=AAAAnjx6yDc:APA91bGzkbzuYmRCbZWNVh923dCIQ0KNkB4hbPwb-324AeG4JPeNj4Izt6j0svRf6QtM2uEwSeidqH2Vf2S8T82X_H0UvIkWLhWsz_mE9Aga6lCknA2YtJxEhEscL_eiRTka4mr0t0aP'
                     },
                     body: JSON.stringify({
-                        'to': targetToken, 
+                        'token': targetToken, 
                         'data': {
                             'action' : "open_chat",
+                            'userId' : userId,
                         }
                     })
                 }

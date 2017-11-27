@@ -122,9 +122,11 @@
                 });
 
             });
-            $('#btn-find-order').click(function() {
-                
+
+            messaging.onMessage(function(payload) {
+			    console.log(payload);
             });
+            
             function registerToken(userId,fcmToken) {
                 $.ajax({
                     type: 'POST',
