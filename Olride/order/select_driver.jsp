@@ -359,11 +359,30 @@
 				},
 			});
 		}
-		function chooseDriver(driver_id) {
-			document.getElementById('selected_driver').value = driver_id;
+		function chooseDriver(driverId) {
+			document.getElementById('selected_driver').value = driverId;
 			var form = document.getElementById('submit_select_drv');
-			form.submit();
+			initDriverChatroom(driverId,myId,function(err) {
+				if (err) console.log(err);
+				return form.submit();
+			});
 		}
+		function initDriverChatroom(driverId,customerId,callback) {
+			$.ajax({
+				type: 'POST',
+				url: 'http://localhost:8123/driver/start',
+				data: {
+					token: fcmToken,
+					customerId: customerId,
+					driverId: driverId
+				},
+				success: callback,
+				error: function (responseData, textStatus, errorThrown) {
+					alert('POST failed.');
+				},
+			});
+		}
+
 	</script>
 
 

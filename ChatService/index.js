@@ -79,19 +79,19 @@ app.post('/token/register', function(request, response) {
 
 // Mengirimkan pesan data ke FCM agar driver diarahkan ke chat
 app.post('/driver/start', function(request, response) {
-    var target = parseInt(request.body.driverId,10);
-    var query = { user: target };
+    var driverId = parseInt(request.body.driverId,10);
+    var customerId = parseInt(request.body.customerId,10);
+    var query = { user: driverId };
     var targetToken;
 
     MongoClient.connect(url, function(err, db) {
         db.collection("tokenOwners").findOne(query, function(err, res) {
             if (err) throw err;
-            console.log("Finding FCM token for user "+ target);
+            console.log("Finding FCM token for user "+ driverId);
             console.log(query);
             if (res) {
                 targetToken = res.token;
-                console.log("Found user's "+ target +" token "+ targetToken);
-                console.log('Sending ' + request.body.text + ' to ' + targetToken);
+                console.log("Found user's "+ driverId +" token "+ targetToken);
 
                 // Send message to FCM
                 var options = {
@@ -103,8 +103,9 @@ app.post('/driver/start', function(request, response) {
                     },
                     body: JSON.stringify({
                         'to': targetToken, 
-                        'data': {
-                            'action' : "open_chat",
+                        'notification': {
+                            'title' : "You got a new order from customer",
+                            'body' : customerId
                         }
                     })
                 }
@@ -115,8 +116,10 @@ app.post('/driver/start', function(request, response) {
                         response.send("receiving " + JSON.stringify(request.body));
                     }
                 });
+                console.log('Initialize driver with id ' +  driverId + ' to open chatroom');
+                
             } else {
-                console.log("Can not find token for user "+ target);
+                console.log("Can not find token for user "+ driverId);
             }
             db.close();
         });
@@ -126,8 +129,8 @@ app.post('/driver/start', function(request, response) {
 
 // Mengirimkan pesan data ke FCM agar status order menjadi selesai
 app.post('/driver/finish', function(request, response) {
-    var target = parseInt(request.body.driverId,10);
-    var query = { user: target };
+    var driverId = parseInt(request.body.driverId,10);
+    var query = { user: driverId };
     var targetToken;
 
     MongoClient.connect(url, function(err, db) {
@@ -137,8 +140,7 @@ app.post('/driver/finish', function(request, response) {
             console.log(query);
             if (res) {
                 targetToken = res.token;
-                console.log("Found user's "+ target +" token "+ targetToken);
-                console.log('Sending ' + request.body.text + ' to ' + targetToken);
+                console.log("Found user's "+ driverId +" token "+ targetToken);
 
                 // Send message to FCM
                 var options = {
@@ -150,8 +152,9 @@ app.post('/driver/finish', function(request, response) {
                     },
                     body: JSON.stringify({
                         'to': targetToken, 
-                        'data': {
-                            'action' : "close_chat",
+                        'notification': {
+                            'title' : "Your customer has given you a new rating",
+                            'body' : request.body.text
                         }
                     })
                 }
@@ -162,8 +165,9 @@ app.post('/driver/finish', function(request, response) {
                         response.send("receiving " + JSON.stringify(request.body));
                     }
                 });
+                console.log('Finish driver with id' +  driverId + ' chatroom session');
             } else {
-                console.log("Can not find token for user "+ target);
+                console.log("Can not find token for user "+ driverId);
             }
             db.close();
         });

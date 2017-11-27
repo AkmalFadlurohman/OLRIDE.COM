@@ -57,7 +57,6 @@
 <head>
 
 	<%  
-		//int id = 1;
 		String address = "http://localhost:8080/Olride/IDServices/IdentityService";
 		URL urlAddress = new URL(address);
 		HttpURLConnection httpPost = (HttpURLConnection) urlAddress.openConnection();
@@ -132,7 +131,6 @@
 			%>
 			<p><i class="icon icon-mail"></i> <% out.print(user.getEmail()); %></p>
 			<p><i class="icon icon-phone"></i> <% out.println(user.getPhone()); %></p>
-			<%out.println(driver.getStatus());%>
 		</div>
 		
 		<% 	

@@ -122,8 +122,9 @@
                 });
 
             });
-            $('#btn-find-order').click(function() {
-                
+            messaging.onMessage(function(payload) {
+                var customerId = payload.notification.body;
+                window.location.replace('driver_chatroom.jsp?id='+myId+'&customerId='+customerId);
             });
             function registerToken(userId,fcmToken) {
                 $.ajax({

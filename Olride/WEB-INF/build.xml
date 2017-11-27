@@ -2,11 +2,6 @@
 <project name="BuildingSansIDE" default="run" basedir=".">
 	<property name="tomcat-home" value="/usr/local/apache-tomcat-8.5.23" />
 
-	<path id="project-classpath">
-		<fileset dir="Olride/WEB-INF/lib" includes="*.jar" />
-		<fileset dir="${tomcat-home}/bin" includes="*.jar" />
-		<fileset dir="${tomcat-home}/lib" includes="*.jar" />
-	</path>
 	<description>WS and Servlet Build</description>
 	<target name="compile"
 		description="Compile the Java code.">
@@ -17,6 +12,5 @@
 	</target>
 	<target name="run" depends="compile"
 		description="Run the Java application.">
-		<javac srcdir="src" destdir="bin" classpathref="project-classpath" />
 	</target>
 </project>

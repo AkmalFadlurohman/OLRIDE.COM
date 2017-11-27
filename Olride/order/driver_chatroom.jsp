@@ -100,7 +100,7 @@
         </div>
         <%
             //Get customer info
-            int customerId = 3;
+            int customerId = Integer.parseInt(request.getParameter("customerId"));
             httpPost = (HttpURLConnection) urlAddress.openConnection();
             httpPost.setRequestMethod("POST");
             httpPost.setDoOutput(true);
