@@ -222,7 +222,6 @@
 
         messaging.onMessage(function(payload) {
             var scope = angular.element($("#driver-order-chat")).scope();
-            console.log(payload);
             var data = payload.data;
             if (data != null && data.action == 'close_order') {
                 window.location.replace('order.jsp?id='+myId);
