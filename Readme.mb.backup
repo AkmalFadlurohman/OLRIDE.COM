@@ -1,13 +1,5 @@
 # Tugas 3 IF3110 Pengembangan Aplikasi Berbasis Web
 
-## Deskripsi Singkat
-PR-OJEK adalah aplikasi ojek online berbasis web memungkinkan seorang pengguna untuk menjadi penumpang dan/atau driver ojek online. Untuk menggunakan aplikasi ini, seorang pengguna harus melakukan login. Pengguna dapat menjadi penumpang maupun driver pada akun yang sama. Untuk menjadi driver, pengguna harus mengaktifkan opsi menjadi driver pada profilnya.
-Seorang driver yang akan mencari order harus mengaktifkan statusnya agar dapat menjadi visible ketika ada user lain yang akan mencari ojek. Pengguna dapat saling bertukar pesan dengan driver secara realtime di halaman order chat driver.
-
-
-
-
-
 Melakukan upgrade Website ojek online sederhana pada Tugas 2 dengan mengaplikasikan ***cloud service* (Firebase Cloud Messaging) dan *framework* MEAN stack**.
 
 **Luangkan waktu untuk membaca spek ini sampai selesai. Kerjakan hal yang perlu saja.**
