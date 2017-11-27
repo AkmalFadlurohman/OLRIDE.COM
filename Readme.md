@@ -47,7 +47,7 @@ Halaman Order pada Driver Ketika Mendapat Order
 
 ### Chat Pengguna
 
-Halaman Order pada Pengguna, Chat Driver
+Halaman Chat Driver Pengguna 
 
 ![](img/pengguna_chat_driver.png)
 
@@ -66,8 +66,9 @@ Chat REST Service:
 1. Fungsionalitas pengiriman pesan : 13515074,13515146  
 2. Fungsionalitas interaksi dengan server firebase : 13515146  
 3. Fungsionalitas penyimpanan chat history: 13515074
-4. Fungsionalitas membuka chatroom untuk driver dari server side: 13515074
-5. Fungsionalitas menutup chatroom untuk driver dari server side: 13515146 
+4. Fungsionalitas penyimpanan token FCM pengguna: 13515074
+5. Fungsionalitas membuka chatroom untuk driver dari server side: 13515074
+6. Fungsionalitas menutup chatroom untuk driver dari server side: 13515146 
 
 Fitur security (IP, User-agent) :
 1. Validasi user agent dan ip : 13515074
