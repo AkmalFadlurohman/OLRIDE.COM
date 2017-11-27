@@ -124,6 +124,9 @@ app.post('/driver/start', function(request, response) {
                         'notification': {
                             'title' : "You got a new order from customer",
                             'body' : customerId
+                        },
+                        'data':{
+                            'action':'open_order'
                         }
                     })
                 }
@@ -154,7 +157,7 @@ app.post('/driver/finish', function(request, response) {
     MongoClient.connect(url, function(err, db) {
         db.collection("tokenOwners").findOne(query, function(err, res) {
             if (err) throw err;
-            console.log("Finding FCM token for user "+ target);
+            console.log("Finding FCM token for user "+ driverId);
             console.log(query);
             if (res) {
                 targetToken = res.token;
@@ -173,6 +176,9 @@ app.post('/driver/finish', function(request, response) {
                         'notification': {
                             'title' : "Your customer has given you a new rating",
                             'body' : request.body.text
+                        },
+                        'data': {
+                            'action':'close_order'
                         }
                     })
                 }

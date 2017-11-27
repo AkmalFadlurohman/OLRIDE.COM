@@ -188,12 +188,12 @@
         <br>
 
 		<div class="row text-center">
-			<form method="post"  action="complete_order.jsp">
+			<form id="finish-form" method="post" action="complete_order.jsp">
 				<input type="hidden" name="id" value=<%out.print(user.getId()); %>>
 				<input type="hidden" name="pickLoc" value=<%out.print(pickLoc);%>>
 				<input type="hidden" name="destLoc" value=<%out.print(destLoc);%>>
 				<input type="hidden" name="selected_driver" value=<%out.print(driverId);%>>
-				<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" onclick="return confirm('Are you sure you want to finish chatting with your driver?');" style="width:150px; color:white; font-size:larger; padding: 10px 25px">
+				<input id="btn-cancel" class="btn red" type="submit" value="CLOSE" style="width:150px; color:white; font-size:larger; padding: 10px 25px" onclick="finishOrder()">
 			</form>
 		</div>
 
@@ -299,7 +299,7 @@
 			if(e.which == 13) {
 				sendMessage(driverId);
 			}
-    	});
+		});
 
 		function sendMessage(uid) {
 			var msg = $('#chat-textarea').val().trim();
@@ -346,6 +346,55 @@
 				alert('Message is empty!');
 			}
 		}
+
+		function finishOrder() {
+			var sure =  confirm('Are you sure you want to finish chatting with your driver?');
+			if (sure) {
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:8123/driver/finish',
+					data: {
+						'driverId': driverId,
+					},
+					success: function(responseData, textStatus, jqXHR) {
+
+					},
+					error: function (responseData, textStatus, errorThrown) {
+						alert('POST failed.');
+					},
+				});
+				setTimeout(null, 100);
+			}
+			return sure;
+		}
+
+		$('#finish-form').submit(function() {
+			var sure =  confirm('Are you sure you want to finish chatting with your driver?');
+			if (sure) {
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:8123/driver/finish',
+					data: {
+						'driverId': driverId,
+					},
+					success: function(responseData, textStatus, jqXHR) {
+						$.ajax({   
+							type: "POST",
+							data : $('#finish-form').serialize(),
+							url: "complete_order.jsp",   
+							success: function(data){
+								$("#results").html(data);                       
+							}   
+						}); 						
+					},
+					error: function (responseData, textStatus, errorThrown) {
+						alert('POST failed.');
+					},
+				});
+			}
+			return false;
+		});
+
 		function scrollDown() {
 			setTimeout(function() {
 				$('#chatarea').scrollTop($('#chatarea')[0].scrollHeight);
